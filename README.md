@@ -33,11 +33,16 @@ cd idelium-docker
 ./start-idelium.sh
 ```
 
+## Login
+
 Open your browser and launch:
 
 https://localhost
 
+## Credentials
+
 To log in to the system, enter the following credentials:
 
 username: admin@idelium.io
+
 password: admin
