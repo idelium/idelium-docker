@@ -1,0 +1,43 @@
+![Idelium](https://idelium.io/assets/images/idelium.png)
+
+# Idelium Automation Server
+
+Idelium AS is the tool that allows you to configure your tests. You can define your project, define your steps, compose your testcase.
+
+Once you have configured what you want to test, you are ready to run your test using [idelium-cli](https://github.com/idelium/idelium-cli).
+
+For more info: https://idelium.io
+## idelium-docker
+
+idelium-docker is a docker project to start Idelium AS locally, as a pre-requisite you must have docker on your machine (https://www.docker.com/)
+
+It is made up of three containers:
+
+1) idelium-fe (front end)
+
+2) idelium-be (web api)
+
+3) idelium-db (db server)
+
+## Download idelium-docker
+
+```
+git clone https://github.com/idelium/idelium-cli.git
+cd idelium-cli
+```
+
+To launch the server  and configure it correctly is very simple, just run these two commands:
+
+```
+cd idelium-docker
+./start-idelium.sh
+```
+
+Open your browser and launch:
+
+https://localhost
+
+To log in to the system, enter the following credentials:
+
+username: admin@idelium.io
+password: admin
