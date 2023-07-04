@@ -20,7 +20,7 @@ RUN mkdir -p "/etc/supervisor/logs"
 COPY conf/supervisord.conf /etc/supervisor/supervisord.conf
 COPY script/configure.sh /tmp/configure.sh
 
-#CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]
 
 RUN mkdir -p "/etc/apache2/certs"
 RUN apt-get update && \
