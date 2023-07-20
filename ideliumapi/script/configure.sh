@@ -7,6 +7,7 @@ if [ ! -f /var/idelium-api/idelium.ok ]; then
     php artisan cache:clear
     php artisan migrate
     php artisan db:seed
+    php artisan db:seed --class=DemoProfileSeeder
     touch idelium.ok
 fi
 exit 0
