@@ -19,6 +19,10 @@ It is made up of three containers:
 
 3) idelium-db (db server)
 
+## Prerequisite
+
+Install Docker from [https://www.docker.com/](https://www.docker.com/)
+
 ## Download idelium-docker
 
 ```
