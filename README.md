@@ -43,6 +43,6 @@ https://localhost
 
 To log in to the system, enter the following credentials:
 
-username: admin@idelium.io
+username: demo@idelium.io
 
-password: admin
+password: demo
