@@ -43,10 +43,14 @@ Open your browser and launch:
 
 https://localhost
 
-## Credentials
+### Credentials
 
 To log in to the system, enter the following credentials:
 
 username: demo@idelium.io
 
 password: demo
+
+## Quick Start
+
+[https://github.com/idelium/idelium-docker/wiki/Quick-Start](https://github.com/idelium/idelium-docker/wiki/Quick-Start)
