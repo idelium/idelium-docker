@@ -27,7 +27,6 @@ Install Docker from [https://www.docker.com/](https://www.docker.com/)
 
 ```
 git clone https://github.com/idelium/idelium-docker.git
-cd idelium-docker
 ```
 
 To launch the server  and configure it correctly is very simple, just run these two commands:
