@@ -52,4 +52,4 @@ password: demo
 
 ## Quick Start
 
-[https://github.com/idelium/idelium-docker/wiki/Quick-Start](https://github.com/idelium/idelium-docker/wiki/Quick-Start)
+[https://github.com/idelium/idelium-docker/wiki/Quick-Start-Selenium](https://github.com/idelium/idelium-docker/wiki/Quick-Start-Selenium)
