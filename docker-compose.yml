@@ -3,9 +3,7 @@ version: "3.8"
 services:
         ideliumfe:
                 image:
-                        ideliumfe
-                build:
-                        context: ./idelium-fe
+                        ifuschini/ideliumfe
                 ports:
                         - 443:443
                 links:
@@ -18,9 +16,7 @@ services:
 
         ideliumapi:
                 image:
-                        ideliumapi
-                build:
-                        context: ./ideliumapi
+                        ifuschini/ideliumapi
                 links:
                         - 'ideliumdb'
                 networks:
@@ -32,9 +28,7 @@ services:
                                 condition: service_healthy
         ideliumdb:
                 image:
-                        ideliumdb
-                build:
-                        context: ./ideliumdb
+                        ifuschini/ideliumdb
                 networks:
                         - idelium_net
                 environment:
