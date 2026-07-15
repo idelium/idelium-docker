@@ -1,59 +1,85 @@
 ![Idelium](https://idelium.io/assets/images/idelium.png)
 
-# Idelium Automation Server
+# Idelium local stack
 
-Idelium AS is the tool that allows you to configure your tests. You can define your project, define your steps, compose your testcase.
+This repository builds the Idelium API, Web application, and MariaDB images from
+the adjacent `idelium-api` and `idelium-web` checkouts. Builds never clone a
+moving branch. Application dependencies come from `composer.lock` and
+`package-lock.json`.
 
-Once you have configured what you want to test, you are ready to run your test using [idelium-cli](https://github.com/idelium/idelium-cli).
+## Repository layout
 
-For more info: https://idelium.io
-## idelium-docker
+Place the repositories next to each other:
 
-idelium-docker is a docker project to start Idelium AS locally, as a pre-requisite you must have docker on your machine (https://www.docker.com/)
-
-It is made up of three containers:
-
-1) idelium-fe (front end)
-
-2) idelium-be (web api)
-
-3) idelium-db (db server)
-
-## Prerequisite
-
-Install Docker from [https://www.docker.com/](https://www.docker.com/)
-
-## Download idelium-docker
-
-```
-git clone https://github.com/idelium/idelium-docker.git
+```text
+idelium-api/
+idelium-docker/
+idelium-web/
 ```
 
-To launch the server  and configure it correctly is very simple, just run these two commands:
+Copy `.env.example` to `.env` and adjust non-secret configuration. Secret values
+must be stored in ignored files or supplied by the deployment secret provider.
 
+## Explicit demo startup
+
+Demo data and a development certificate are enabled only by the demo overlay:
+
+```sh
+./start-idelium.sh --demo
 ```
-cd idelium-docker
-./start-idelium.sh
+
+The command creates random ignored development secrets when they are absent,
+builds the three local images, waits for the database, one-shot migrations and
+seeds, API, and frontend, then runs an HTTPS request through the frontend proxy.
+The generated demo identity is stored in `secrets/demo_email` and
+`secrets/demo_password`; credentials are never printed or committed.
+
+Stop the stack without deleting database data:
+
+```sh
+docker compose -f docker-compose.yml -f compose.demo.yml down
 ```
 
-## Login
+To remove demo database and certificate volumes as well, explicitly add
+`--volumes`.
 
-Open your browser and launch:
+## Production-oriented startup
 
-https://localhost
+Create the database password, root password, and Laravel application key through
+your secret provider. Mount a trusted certificate directory containing
+`server.crt` and `server.key`, set `TLS_CERT_DIR`, and run:
 
-### Credentials
+```sh
+./start-idelium.sh --production
+```
 
-To log in to the system, enter the following credentials:
+Production mode fails instead of generating a self-signed certificate. Demo seeds
+remain disabled. See [operations.md](docs/operations.md) for certificate, secret
+rotation, troubleshooting, and rollback guidance.
 
-username: demo@idelium.io
+## Reproducible local images
 
-password: demo
+Commit all three repositories, then build from their exact revisions:
 
-## Quick Start
+```sh
+./scripts/build-local.sh --no-cache
+./scripts/build-local.sh
+```
 
-[https://github.com/idelium/idelium-docker/wiki/Quick-Start-Selenium](https://github.com/idelium/idelium-docker/wiki/Quick-Start-Selenium)
+The script refuses dirty source trees, applies versioned image tags, and verifies
+OCI revision labels against every checkout. Repeating it without source changes
+uses the same application revisions and lockfiles.
 
-or
+## Published release images
 
-[https://github.com/idelium/idelium-docker/wiki/Quick-Start-Test-API-Using-Postman](https://github.com/idelium/idelium-docker/wiki/Quick-Start-Test-API-Using-Postman)
+Pulling published images is deliberately separate from local builds. Set complete
+versioned image references or digests in `API_RELEASE_IMAGE`, `WEB_RELEASE_IMAGE`,
+and `DB_RELEASE_IMAGE`, then run:
+
+```sh
+docker compose -f docker-compose.yml -f compose.production.yml -f compose.release.yml pull
+./start-idelium.sh --release
+```
+
+The release startup uses `--no-build`; it cannot silently replace published
+artifacts with local sources.

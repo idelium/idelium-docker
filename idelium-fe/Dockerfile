@@ -1,20 +1,30 @@
-FROM httpd:2.4
+FROM node:22.17.0-bookworm-slim@sha256:b04ce4ae4e95b522112c2e5c52f781471a5cbc3b594527bcddedee9bc48c03a0 AS web-build
 
-COPY conf/apache-httpd.conf /usr/local/apache2/conf/httpd.conf
-COPY conf/httpd-vhosts-idelium-ssl.conf /usr/local/apache2/conf/extra/httpd-vhosts-idelium-ssl.conf
-COPY script/build.sh /tmp/build.sh
-COPY html/index.html /usr/local/apache2/htdocs/index.html
-RUN mkdir -p "/usr/local/apache2/certs"
-RUN apt-get update && \
-    apt-get install -y openssl && \
-    openssl genrsa -des3 -passout pass:x -out certs/server.pass.key 2048 && \
-    openssl rsa -passin pass:x -in certs/server.pass.key -out certs/server.key && \
-    rm certs/server.pass.key && \
-    openssl req -new -key certs/server.key -out certs/server.csr \
-    -subj "/C=UK/ST=Warwickshire/L=Leamington/O=OrgName/OU=IT Department/CN=example.com" && \
-    openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out certs/server.crt
-RUN apt-get install -y git curl
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs
-RUN git clone https://github.com/idelium/idelium-web.git /tmp/idelium-web
-RUN chmod 755 /tmp/build.sh
+WORKDIR /build
+COPY --from=web_source package.json package-lock.json ./
+RUN npm ci
+COPY --from=web_source . ./
+RUN npm run build
+
+FROM httpd:2.4.65-bookworm@sha256:fbc12199ccad031d8047e9c789d65aceee2d14f99ba90664cd3a3996867a5582
+
+ARG WEB_SOURCE_REVISION=unknown
+ARG STACK_SOURCE_REVISION=unknown
+LABEL org.opencontainers.image.source="https://github.com/idelium/idelium-web" \
+      org.opencontainers.image.revision="${WEB_SOURCE_REVISION}" \
+      io.idelium.stack.revision="${STACK_SOURCE_REVISION}"
+
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends curl openssl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY idelium-fe/conf/apache-httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY idelium-fe/conf/httpd-vhosts-idelium-ssl.conf /usr/local/apache2/conf/extra/httpd-vhosts-idelium-ssl.conf
+COPY idelium-fe/script/entrypoint.sh /usr/local/bin/idelium-web-entrypoint
+COPY --from=web-build /build/dist/ /usr/local/apache2/htdocs/
+
+RUN chmod 0755 /usr/local/bin/idelium-web-entrypoint \
+    && mkdir -p /usr/local/apache2/certs
+
+ENTRYPOINT ["/usr/local/bin/idelium-web-entrypoint"]
+CMD ["httpd-foreground"]

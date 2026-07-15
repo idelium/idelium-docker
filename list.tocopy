@@ -1,5 +1,11 @@
 idelium-fe
 ideliumapi
 ideliumdb
-list.tocopy
+scripts
+docs
+docker-compose.yml
+compose.demo.yml
+compose.production.yml
+compose.release.yml
+.env.example
 README.md

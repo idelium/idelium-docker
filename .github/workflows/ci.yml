@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan tracked content for secrets
+        uses: gitleaks/gitleaks-action@v2
+      - name: Validate Compose, scripts, and immutable-source policy
+        run: ./scripts/validate.sh

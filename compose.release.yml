@@ -1,0 +1,13 @@
+services:
+  ideliumdb:
+    image: ${DB_RELEASE_IMAGE:?Set DB_RELEASE_IMAGE}
+    pull_policy: always
+  ideliuminit:
+    image: ${API_RELEASE_IMAGE:?Set API_RELEASE_IMAGE}
+    pull_policy: always
+  ideliumapi:
+    image: ${API_RELEASE_IMAGE:?Set API_RELEASE_IMAGE}
+    pull_policy: always
+  ideliumfe:
+    image: ${WEB_RELEASE_IMAGE:?Set WEB_RELEASE_IMAGE}
+    pull_policy: always

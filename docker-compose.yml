@@ -1,45 +1,151 @@
-version: "3.8"
+name: idelium
+
+x-api-environment: &api-environment
+  APP_ENV: ${APP_ENV:-production}
+  APP_DEBUG: "false"
+  APP_URL: ${APP_URL:-https://localhost}
+  DB_CONNECTION: mysql
+  DB_HOST: ideliumdb
+  DB_PORT: "3306"
+  DB_DATABASE: ${DB_DATABASE:-ideliumdb}
+  DB_USERNAME: ${DB_USERNAME:-idelium}
+  DB_PASSWORD_FILE: /run/secrets/db_password
+  APP_KEY_FILE: /run/secrets/app_key
+  CACHE_DRIVER: file
+  QUEUE_CONNECTION: sync
+  SESSION_DRIVER: database
 
 services:
-        ideliumfe:
-                image:
-                        ifuschini/ideliumfe:latest
-                ports:
-                        - 443:443
-                links:
-                        - 'ideliumdb'
-                networks:
-                        - idelium_net
-                environment:
-                        dbhost: "ideliumdb"
-                        be: "ideliumapi"
+  ideliumdb:
+    image: ${DB_IMAGE:-idelium/db}:${IDELIUM_VERSION:-local}
+    build:
+      context: .
+      dockerfile: ideliumdb/Dockerfile
+      args:
+        STACK_SOURCE_REVISION: ${STACK_SOURCE_REVISION:-unknown}
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE:-ideliumdb}
+      MARIADB_USER: ${DB_USERNAME:-idelium}
+      MARIADB_PASSWORD_FILE: /run/secrets/db_password
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - ideliumdb_data:/var/lib/mysql
+    networks:
+      - idelium_net
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "MARIADB_PWD=$$(cat /run/secrets/db_password) mariadb-admin ping --silent --host=127.0.0.1 --user=$$MARIADB_USER",
+        ]
+      start_period: 20s
+      interval: 5s
+      timeout: 5s
+      retries: 24
 
-        ideliumapi:
-                image:
-                        ifuschini/ideliumapi:latest
-                links:
-                        - 'ideliumdb'
-                networks:
-                        - idelium_net
-                environment:
-                        dbhost: "ideliumdb"
-                depends_on:
-                        ideliumdb:
-                                condition: service_healthy
-        ideliumdb:
-                image:
-                        ifuschini/ideliumdb:latest
-                networks:
-                        - idelium_net
-                environment:
-                        MYSQL_USER: ideliumadmin
-                        MYSQL_PASSWORD: idelium                        
-                healthcheck:
-                        test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
-                        start_period: 5s
-                        interval: 5s
-                        timeout: 5s
-                        retries: 55
+  ideliuminit:
+    image: ${API_IMAGE:-idelium/api}:${IDELIUM_VERSION:-local}
+    build:
+      context: .
+      dockerfile: ideliumapi/Dockerfile
+      additional_contexts:
+        api_source: ../idelium-api
+      args:
+        API_SOURCE_REVISION: ${API_SOURCE_REVISION:-unknown}
+        STACK_SOURCE_REVISION: ${STACK_SOURCE_REVISION:-unknown}
+    command: ["/usr/local/bin/initialize-idelium"]
+    environment:
+      <<: *api-environment
+      IDELIUM_RUN_BASE_SEEDS: ${IDELIUM_RUN_BASE_SEEDS:-false}
+      IDELIUM_RUN_DEMO_SEEDS: ${IDELIUM_RUN_DEMO_SEEDS:-false}
+    secrets:
+      - db_password
+      - app_key
+    depends_on:
+      ideliumdb:
+        condition: service_healthy
+    networks:
+      - idelium_net
+    restart: "no"
+
+  ideliumapi:
+    image: ${API_IMAGE:-idelium/api}:${IDELIUM_VERSION:-local}
+    environment: *api-environment
+    secrets:
+      - db_password
+      - app_key
+    depends_on:
+      ideliuminit:
+        condition: service_completed_successfully
+    networks:
+      - idelium_net
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/usr/local/bin/idelium-api-entrypoint sh -c 'curl --fail --silent --show-error http://127.0.0.1/api/sanctum/csrf-cookie >/dev/null && php artisan migrate:status --no-ansi >/dev/null'",
+        ]
+      start_period: 15s
+      interval: 10s
+      timeout: 8s
+      retries: 12
+
+  ideliumfe:
+    image: ${WEB_IMAGE:-idelium/web}:${IDELIUM_VERSION:-local}
+    build:
+      context: .
+      dockerfile: idelium-fe/Dockerfile
+      additional_contexts:
+        web_source: ../idelium-web
+      args:
+        WEB_SOURCE_REVISION: ${WEB_SOURCE_REVISION:-unknown}
+        STACK_SOURCE_REVISION: ${STACK_SOURCE_REVISION:-unknown}
+    environment:
+      TLS_MODE: ${TLS_MODE:-production}
+      TLS_COMMON_NAME: ${TLS_COMMON_NAME:-localhost}
+    ports:
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - idelium_tls:/usr/local/apache2/certs
+    depends_on:
+      ideliumapi:
+        condition: service_healthy
+    networks:
+      - idelium_net
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent --show-error --cacert /usr/local/apache2/certs/server.crt https://localhost/ >/dev/null",
+        ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
 networks:
   idelium_net:
     driver: bridge
+
+volumes:
+  ideliumdb_data:
+  idelium_tls:
+
+secrets:
+  db_password:
+    file: ${DB_PASSWORD_FILE:-./secrets/db_password}
+  db_root_password:
+    file: ${DB_ROOT_PASSWORD_FILE:-./secrets/db_root_password}
+  app_key:
+    file: ${APP_KEY_FILE:-./secrets/app_key}
+  demo_email:
+    file: ${DEMO_EMAIL_FILE:-./secrets/demo_email}
+  demo_password:
+    file: ${DEMO_PASSWORD_FILE:-./secrets/demo_password}
+  admin_email:
+    file: ${ADMIN_EMAIL_FILE:-./secrets/admin_email}
+  admin_password:
+    file: ${ADMIN_PASSWORD_FILE:-./secrets/admin_password}

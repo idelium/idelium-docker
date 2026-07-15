@@ -1,0 +1,23 @@
+services:
+  ideliuminit:
+    environment:
+      APP_ENV: local
+      IDELIUM_RUN_BASE_SEEDS: "true"
+      IDELIUM_RUN_DEMO_SEEDS: "true"
+      IDELIUM_DEMO_EMAIL_FILE: /run/secrets/demo_email
+      IDELIUM_DEMO_PASSWORD_FILE: /run/secrets/demo_password
+      IDELIUM_ADMIN_EMAIL_FILE: /run/secrets/admin_email
+      IDELIUM_ADMIN_PASSWORD_FILE: /run/secrets/admin_password
+    secrets:
+      - demo_email
+      - demo_password
+      - admin_email
+      - admin_password
+
+  ideliumapi:
+    environment:
+      APP_ENV: local
+
+  ideliumfe:
+    environment:
+      TLS_MODE: development

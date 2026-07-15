@@ -1,36 +1,33 @@
-FROM php:8.3-apache
+FROM composer:2.8.12@sha256:5248900ab8b5f7f880c2d62180e40960cd87f60149ec9a1abfd62ac72a02577c AS composer-bin
 
-RUN apt-get update
+FROM php:8.4.13-apache-bookworm@sha256:9a2ce5c55ce38f31062e5027ef9cf0aa008c9f7571bd3362aeec5071ef28c06e
 
-RUN apt-get install -y libzip-dev zip unzip
+ARG API_SOURCE_REVISION=unknown
+ARG STACK_SOURCE_REVISION=unknown
+LABEL org.opencontainers.image.source="https://github.com/idelium/idelium-api" \
+      org.opencontainers.image.revision="${API_SOURCE_REVISION}" \
+      io.idelium.stack.revision="${STACK_SOURCE_REVISION}"
 
-RUN docker-php-ext-install pdo pdo_mysql mysqli zip
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends curl libzip-dev supervisor unzip \
+    && docker-php-ext-install pdo pdo_mysql mysqli zip \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN curl --insecure https://getcomposer.org/composer.phar -o /usr/bin/composer && chmod +x /usr/bin/composer
-
-RUN curl -sS https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony5/bin/symfony /usr/bin/symfony
-RUN ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/rewrite.load
- 
-COPY conf/idelium-httpd.conf /etc/apache2/sites-enabled/000-default.conf
-
-RUN apt-get install -y supervisor
-RUN mkdir -p "/etc/supervisor/logs"
-
-COPY conf/supervisord.conf /etc/supervisor/supervisord.conf
-COPY script/configure.sh /tmp/configure.sh
-
-CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]
-
-RUN mkdir -p "/etc/apache2/certs"
-RUN apt-get update && \
-    apt-get install -y openssl && \
-    openssl genrsa -des3 -passout pass:x -out /etc/apache2/certs/server.pass.key 2048 && \
-    openssl rsa -passin pass:x -in /etc/apache2/certs/server.pass.key -out /etc/apache2/certs/server.key && \
-    rm /etc/apache2/certs/server.pass.key && \
-    openssl req -new -key /etc/apache2/certs/server.key -out /etc/apache2/certs/server.csr \
-    -subj "/C=UK/ST=Warwickshire/L=Leamington/O=OrgName/OU=IT Department/CN=example.com" && \
-    openssl x509 -req -days 365 -in /etc/apache2/certs/server.csr -signkey /etc/apache2/certs/server.key -out /etc/apache2/certs/server.crt
-RUN git clone https://github.com/idelium/idelium-api.git /var/idelium-api
-RUN chown -R www-data:www-data /var/idelium-api
+COPY --from=composer-bin /usr/bin/composer /usr/local/bin/composer
 WORKDIR /var/idelium-api
+COPY --from=api_source composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader --no-scripts
+COPY --from=api_source . ./
+RUN composer dump-autoload --no-dev --no-interaction --optimize --classmap-authoritative \
+    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache /etc/supervisor/logs \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+COPY ideliumapi/conf/idelium-httpd.conf /etc/apache2/sites-enabled/000-default.conf
+COPY ideliumapi/conf/supervisord.conf /etc/supervisor/supervisord.conf
+COPY ideliumapi/script/entrypoint.sh /usr/local/bin/idelium-api-entrypoint
+COPY ideliumapi/script/initialize.sh /usr/local/bin/initialize-idelium
+RUN chmod 0755 /usr/local/bin/idelium-api-entrypoint /usr/local/bin/initialize-idelium
+
+ENTRYPOINT ["/usr/local/bin/idelium-api-entrypoint"]
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

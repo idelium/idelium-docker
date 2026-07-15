@@ -1,0 +1,6 @@
+services:
+  ideliumfe:
+    environment:
+      TLS_MODE: production
+    volumes:
+      - ${TLS_CERT_DIR:?Set TLS_CERT_DIR to a directory containing server.crt and server.key}:/usr/local/apache2/certs:ro

@@ -1,6 +1,41 @@
-docker-compose -p idelium-demo up --build --detach
-echo "building idelium fe"
-docker exec -d idelium-demo-ideliumfe-1 sh -c "/tmp/build.sh"
-echo "configure idelium api"
-docker exec -d idelium-demo-ideliumapi-1 sh -c "/tmp/configure.sh"
-echo "Open your browser to https://localhost"
+#!/usr/bin/env bash
+set -euo pipefail
+
+mode=${1:-}
+case "$mode" in
+  --demo)
+    ./scripts/create-development-secrets.sh
+    compose_files=(-f docker-compose.yml -f compose.demo.yml)
+    build_flag=(--build)
+    ;;
+  --production)
+    compose_files=(-f docker-compose.yml -f compose.production.yml)
+    build_flag=(--build)
+    ;;
+  --release)
+    compose_files=(-f docker-compose.yml -f compose.production.yml -f compose.release.yml)
+    build_flag=(--no-build)
+    ;;
+  *)
+    echo "Usage: $0 --demo | --production | --release" >&2
+    exit 2
+    ;;
+esac
+
+if [[ "$mode" != "--release" ]]; then
+  export API_SOURCE_REVISION=${API_SOURCE_REVISION:-$(git -C ../idelium-api rev-parse HEAD)}
+  export WEB_SOURCE_REVISION=${WEB_SOURCE_REVISION:-$(git -C ../idelium-web rev-parse HEAD)}
+  export STACK_SOURCE_REVISION=${STACK_SOURCE_REVISION:-$(git rev-parse HEAD)}
+  export IDELIUM_VERSION=${IDELIUM_VERSION:-${STACK_SOURCE_REVISION:0:12}}
+fi
+
+echo "Starting Idelium in ${mode#--} mode and waiting for health checks."
+if ! docker compose "${compose_files[@]}" up "${build_flag[@]}" --detach --wait --wait-timeout "${IDELIUM_START_TIMEOUT:-300}"; then
+    echo "Idelium did not become ready. Inspecting service state and recent logs." >&2
+    docker compose "${compose_files[@]}" ps >&2 || true
+    docker compose "${compose_files[@]}" logs --tail=100 >&2 || true
+    exit 1
+fi
+
+./scripts/smoke-test.sh "${compose_files[@]}"
+echo "Idelium is ready at https://localhost:${HTTPS_PORT:-443}."

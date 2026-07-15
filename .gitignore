@@ -1,2 +1,6 @@
 ./idelium-api/vendors
 ./ideliumdb_data
+.env
+.build.env
+certs/
+secrets/
