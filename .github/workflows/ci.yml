@@ -11,7 +11,7 @@ jobs:
   validate:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Scan tracked content for secrets
@@ -25,18 +25,18 @@ jobs:
 
     steps:
       - name: Check out stack
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: idelium-docker
 
       - name: Check out API source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: idelium/idelium-api
           path: idelium-api
 
       - name: Check out Web source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: idelium/idelium-web
           path: idelium-web
