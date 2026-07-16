@@ -70,6 +70,12 @@ The script refuses dirty source trees, applies versioned image tags, and verifie
 OCI revision labels against every checkout. Repeating it without source changes
 uses the same application revisions and lockfiles.
 
+Every service runs with Docker's `no-new-privileges` restriction and a dedicated
+PID 1 init process. Apache workers and the queue worker run as `www-data`; only
+the process supervisors retain the privileges required to bind standard ports
+and switch worker identities. CI rebuilds all images without cache and exercises
+the complete demo stack through its public HTTPS endpoint.
+
 ## Published release images
 
 Pulling published images is deliberately separate from local builds. Set complete

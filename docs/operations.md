@@ -49,6 +49,15 @@ update the smallest relevant CSP directive and validate the complete login and
 authenticated flows before deployment. Do not add wildcard script sources or
 `unsafe-eval`.
 
+## Runtime privilege model
+
+All services set `no-new-privileges` and use an init process for signal handling
+and zombie reaping. MariaDB and Apache retain their upstream entrypoint model so
+their root startup process can initialize mounted storage, bind privileged ports,
+and then switch to the image's unprivileged worker account. Do not add privileged
+mode, host networking, host PID namespaces, or the Docker socket to these
+services. Review required capabilities before introducing any runtime tool.
+
 ## Deployment and rollback
 
 Migrations run before the API and must remain backward compatible with the

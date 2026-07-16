@@ -18,3 +18,42 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
       - name: Validate Compose, scripts, and immutable-source policy
         run: ./scripts/validate.sh
+
+  integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out stack
+        uses: actions/checkout@v4
+        with:
+          path: idelium-docker
+
+      - name: Check out API source
+        uses: actions/checkout@v4
+        with:
+          repository: idelium/idelium-api
+          path: idelium-api
+
+      - name: Check out Web source
+        uses: actions/checkout@v4
+        with:
+          repository: idelium/idelium-web
+          path: idelium-web
+
+      - name: Build immutable images without cache
+        working-directory: idelium-docker
+        run: ./scripts/build-local.sh --no-cache
+
+      - name: Start and smoke-test the complete stack
+        working-directory: idelium-docker
+        run: ./start-idelium.sh --demo
+
+      - name: Inspect final service state
+        working-directory: idelium-docker
+        run: docker compose -f docker-compose.yml -f compose.demo.yml ps
+
+      - name: Stop integration stack
+        if: always()
+        working-directory: idelium-docker
+        run: docker compose -f docker-compose.yml -f compose.demo.yml down --volumes --remove-orphans

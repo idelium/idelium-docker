@@ -24,6 +24,8 @@ for service in ideliumdb ideliumapi ideliumfe; do
   docker compose --env-file .env.example config | grep -q "  $service:"
 done
 
+test "$(docker compose --env-file .env.example config | grep -c 'no-new-privileges:true')" -eq 4
+
 grep -q 'Content-Security-Policy' idelium-fe/conf/httpd-vhosts-idelium-ssl.conf
 grep -q 'X-Content-Type-Options' idelium-fe/conf/httpd-vhosts-idelium-ssl.conf
 grep -q 'frame-ancestors' idelium-fe/conf/httpd-vhosts-idelium-ssl.conf

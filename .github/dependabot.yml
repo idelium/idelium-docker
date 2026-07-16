@@ -1,0 +1,41 @@
+version: 2
+updates:
+  - package-ecosystem: docker
+    directory: /idelium-fe
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Rome
+    labels:
+      - dependencies
+
+  - package-ecosystem: docker
+    directory: /ideliumapi
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Rome
+    labels:
+      - dependencies
+
+  - package-ecosystem: docker
+    directory: /ideliumdb
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Rome
+    labels:
+      - dependencies
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Rome
+    labels:
+      - dependencies
