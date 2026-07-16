@@ -1,4 +1,7 @@
-![Idelium](logo/idelium.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="logo/idelium_white.png">
+  <img alt="Idelium" src="logo/idelium.png">
+</picture>
 
 # Idelium Docker stack
 
