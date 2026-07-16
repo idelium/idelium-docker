@@ -91,6 +91,16 @@ cp .env.example .env
 ./start-idelium.sh --demo
 ```
 
+For a guided local demo startup, use the convenience wrapper instead:
+
+```bash
+./quickstart-demo.sh
+```
+
+The wrapper verifies the required sibling repositories, creates `.env` from
+`.env.example` when needed, starts demo mode, and prints the local URL and secret
+file paths without printing secret values.
+
 Demo startup:
 
 1. creates missing random development secrets under the ignored `secrets/`
