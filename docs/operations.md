@@ -43,6 +43,12 @@ the smoke test trusts that exact certificate through `--cacert`. It never disabl
 TLS verification. Production mode requires a certificate issued by the
 organization's trusted CA in the directory selected by `TLS_CERT_DIR`.
 
+The public HTTPS virtual host sends a restrictive Content Security Policy and
+standard browser hardening headers. When adding a third-party browser integration,
+update the smallest relevant CSP directive and validate the complete login and
+authenticated flows before deployment. Do not add wildcard script sources or
+`unsafe-eval`.
+
 ## Deployment and rollback
 
 Migrations run before the API and must remain backward compatible with the
