@@ -33,6 +33,12 @@ if [[ ! -f .env ]]; then
   echo "Created .env from .env.example."
 fi
 
+umask 077
+mkdir -p secrets
+printf 'admin@idelium.io' > secrets/admin_email
+printf 'admin' > secrets/admin_password
+echo "Configured demo administrator credentials in the local secrets directory."
+
 ./start-idelium.sh --demo
 
 https_port="$(grep -E '^HTTPS_PORT=' .env | tail -n 1 | cut -d= -f2-)"
@@ -47,7 +53,11 @@ echo
 echo "Idelium demo is ready."
 echo "Open: $url"
 echo
-echo "Demo identity files:"
+echo "Demo administrator:"
+echo "  user: admin@idelium.io"
+echo "  password: admin"
+echo
+echo "Additional demo identity files:"
 echo "  secrets/demo_email"
 echo "  secrets/demo_password"
 echo
