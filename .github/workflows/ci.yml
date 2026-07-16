@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Scan tracked content for secrets
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
       - name: Validate Compose, scripts, and immutable-source policy
         run: ./scripts/validate.sh
 
