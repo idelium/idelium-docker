@@ -167,6 +167,8 @@ files; secret values belong in ignored files or a deployment secret provider.
 | `IDELIUM_VERSION` | Local image tag | `local` |
 | `APP_ENV` | Laravel runtime environment | `production` |
 | `APP_URL` | Public application origin | `https://localhost` |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated trusted browser origins for API requests | `https://localhost,http://localhost:5173,http://127.0.0.1:5173` |
+| `SANCTUM_STATEFUL_DOMAINS` | Comma-separated hosts treated as first-party by Laravel Sanctum | `localhost,localhost:5173,127.0.0.1,127.0.0.1:5173` |
 | `HTTPS_PORT` | Host port mapped to frontend HTTPS | `443` |
 | `DB_DATABASE` | MariaDB database name | `ideliumdb` |
 | `DB_USERNAME` | MariaDB application account | `idelium` |
@@ -188,6 +190,19 @@ Secret files are mounted under `/run/secrets` and read at runtime. Create them
 with owner-only permissions. Never put the secret value directly in a Compose
 file, Dockerfile, image build argument, tracked `.env`, or shell command that is
 recorded in history.
+
+### Testing Idelium Web through Vite
+
+When developing `idelium-web` with Vite, keep the Docker backend running and set
+the web repository `.env` to call the Docker API:
+
+```env
+VITE_IDELIUM_API_BASE_URL=https://localhost/api/
+```
+
+The Docker stack allows `http://localhost:5173` and `http://127.0.0.1:5173` by
+default for local browser requests with Sanctum cookies. Restart the API
+container after changing `CORS_ALLOWED_ORIGINS` or `SANCTUM_STATEFUL_DOMAINS`.
 
 ### Image and revision values
 
