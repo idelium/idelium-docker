@@ -99,7 +99,7 @@ For a guided local demo startup, use the convenience wrapper instead:
 
 The wrapper verifies the required sibling repositories, creates `.env` from
 `.env.example` when needed, configures the local demo administrator as
-`admin@idelium.io` / `admin`, starts demo mode, and prints the local URL.
+`admin@idelium.org` / `admin`, starts demo mode, and prints the local URL.
 
 Demo startup:
 
@@ -116,7 +116,7 @@ self-signed certificate, so the browser will not trust it automatically.
 
 The generated demo identity is stored in `secrets/demo_email` and
 `secrets/demo_password`. The demo administrator defaults to
-`admin@idelium.io` / `admin` and is stored in `secrets/admin_email` and
+`admin@idelium.org` / `admin` and is stored in `secrets/admin_email` and
 `secrets/admin_password`. Copy secrets using a secure local method. They are
 never committed and must never be pasted into logs, screenshots, issues, or chat
 transcripts. These defaults are for local demo mode only and must not be used in

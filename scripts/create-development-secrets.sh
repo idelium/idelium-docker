@@ -18,11 +18,11 @@ if [[ ! -s secrets/app_key ]]; then
   openssl rand -base64 32 | tr -d '\n' >>secrets/app_key
 fi
 if [[ ! -s secrets/demo_email ]]; then
-  printf 'demo@example.invalid' >secrets/demo_email
+  printf 'demo@idelium.org' >secrets/demo_email
 fi
 create_random_secret secrets/demo_password
 if [[ ! -s secrets/admin_email ]]; then
-  printf 'admin@idelium.io' >secrets/admin_email
+  printf 'admin@idelium.org' >secrets/admin_email
 fi
 if [[ ! -s secrets/admin_password ]]; then
   printf 'admin' >secrets/admin_password

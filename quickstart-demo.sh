@@ -35,7 +35,7 @@ fi
 
 umask 077
 mkdir -p secrets
-printf 'admin@idelium.io' > secrets/admin_email
+printf 'admin@idelium.org' > secrets/admin_email
 printf 'admin' > secrets/admin_password
 echo "Configured demo administrator credentials in the local secrets directory."
 
@@ -54,7 +54,7 @@ echo "Idelium demo is ready."
 echo "Open: $url"
 echo
 echo "Demo administrator:"
-echo "  user: admin@idelium.io"
+echo "  user: admin@idelium.org"
 echo "  password: admin"
 echo
 echo "Additional demo identity files:"
