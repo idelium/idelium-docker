@@ -27,6 +27,13 @@ These rules extend the workspace-level Idelium engineering directives.
 8. **Run containers with minimum privilege.** Use non-root users where practical,
    minimize installed packages and image layers, and avoid exposing unnecessary
    ports or services.
+9. **Keep execution infrastructure optional.** Selenium Grid, CLI runners, Appium,
+   and similar execution services must live in explicit Compose override files or
+   documented external topologies. Do not add them to the base API/Web/DB stack.
+10. **Treat mobile infrastructure as external unless explicitly reviewed.** Appium
+    servers, Android emulators, iOS simulators, USB devices, and device farms
+    require documented topology, pinned images when containerized, health checks,
+    and no embedded provider credentials.
 
 ## Required verification
 
@@ -34,4 +41,6 @@ These rules extend the workspace-level Idelium engineering directives.
 - Build every image from a clean cache when changing build instructions.
 - Start the complete stack and wait for all healthchecks.
 - Run an HTTP smoke test through the public frontend endpoint to the API.
+- Run execution-profile smoke tests when changing Selenium Grid, CLI runner, or
+  Appium integration documentation.
 - Confirm that no committed file or rendered configuration contains a real secret.
