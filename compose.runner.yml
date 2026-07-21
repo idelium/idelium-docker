@@ -1,0 +1,18 @@
+services:
+  idelium-cli-runner:
+    image: ${CLI_IMAGE:-idelium/cli}:${IDELIUM_VERSION:-local}
+    build:
+      context: .
+      dockerfile: idelium-cli/Dockerfile
+      additional_contexts:
+        cli_source: ../idelium-cli
+      args:
+        CLI_SOURCE_REVISION: ${CLI_SOURCE_REVISION:-unknown}
+        STACK_SOURCE_REVISION: ${STACK_SOURCE_REVISION:-unknown}
+    networks:
+      - idelium_net
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    profiles:
+      - runner

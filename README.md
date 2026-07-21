@@ -204,6 +204,103 @@ The Docker stack allows `http://localhost:5173` and `http://127.0.0.1:5173` by
 default for local browser requests with Sanctum cookies. Restart the API
 container after changing `CORS_ALLOWED_ORIGINS` or `SANCTUM_STATEFUL_DOMAINS`.
 
+### Optional Selenium Grid and CLI runner profiles
+
+The base stack runs the Idelium portal, API, and database. Browser execution is
+performed by `idelium-cli`, so Selenium infrastructure is intentionally optional.
+For local Selenium Grid testing, start the stack with the pinned Chromium Grid
+profile:
+
+```bash
+docker compose -f docker-compose.yml -f compose.demo.yml -f compose.selenium.yml up -d
+```
+
+The Grid is exposed on `http://localhost:4444` by default. Configure an Idelium
+environment or CLI override with:
+
+```json
+{
+  "browser": "chrome",
+  "seleniumGridUrl": "http://localhost:4444",
+  "seleniumGridCapabilities": {
+    "platformName": "linux",
+    "se:name": "Idelium Selenium Grid test"
+  }
+}
+```
+
+When the CLI runs from another container on the Compose network, use
+`http://selenium-grid:4444` instead of `http://localhost:4444`. Change the host
+port with `SELENIUM_GRID_PORT` if port `4444` is already in use.
+
+Run a WebDriver smoke test against the optional Grid profile with:
+
+```bash
+./scripts/selenium-grid-smoke-test.sh \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium.yml
+```
+
+The smoke test creates a real Chrome WebDriver session through Grid, opens a
+small local data page, verifies the page title, and closes the session. It does
+not require Idelium credentials.
+
+When you want the Idelium CLI inside the same Compose network as the API and
+Grid, add the optional runner overlay:
+
+```bash
+docker compose \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium.yml \
+  -f compose.runner.yml \
+  --profile runner \
+  run --rm idelium-cli-runner idelium --help
+```
+
+The runner image is built from the adjacent `idelium-cli` checkout and records
+the CLI and stack revisions as OCI labels. If a run needs an Idelium API key,
+write it to an ignored local file and mount it only for that run:
+
+```bash
+docker compose \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium.yml \
+  -f compose.runner.yml \
+  --profile runner \
+  run --rm \
+  --volume ./secrets/idelium_cli_api_key:/run/secrets/idelium_cli_api_key:ro \
+  idelium-cli-runner idelium --help
+```
+
+When `/run/secrets/idelium_cli_api_key` is mounted, the container copies it to
+the CLI's protected `~/.idelium` file at runtime. Do not pass API keys in the
+Compose file, image build arguments, command line, logs, or screenshots.
+
+Example in-network execution values:
+
+```bash
+docker compose \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium.yml \
+  -f compose.runner.yml \
+  --profile runner \
+  run --rm idelium-cli-runner \
+  idelium \
+    --idProject=1 \
+    --idCycle=1 \
+    --environment=local \
+    --ideliumwsBaseurl=https://ideliumfe \
+    --seleniumGridUrl=http://selenium-grid:4444
+```
+
+Use project, cycle, and environment names from your own Idelium instance. The
+frontend container's development certificate is trusted by the browser only on
+the host; configure an appropriate CA bundle for non-demo runner workflows.
+
 ### Image and revision values
 
 `API_IMAGE`, `WEB_IMAGE`, and `DB_IMAGE` select local image repositories.
@@ -332,6 +429,15 @@ Run the smoke test independently:
 Replace `compose.demo.yml` with `compose.production.yml` for production mode.
 Review output before sharing it and redact customer data, credentials, cookies,
 authorization headers, and protected response content.
+
+Run the optional Selenium Grid smoke test independently:
+
+```bash
+./scripts/selenium-grid-smoke-test.sh \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium.yml
+```
 
 ## Security model
 

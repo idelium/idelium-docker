@@ -6,16 +6,18 @@ for script in start-idelium.sh scripts/*.sh; do
 done
 
 docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml config --quiet
+docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium.yml config --quiet
+docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium.yml -f compose.runner.yml config --quiet
 
 if awk '/^FROM / && $2 !~ /@sha256:/ { print FILENAME ":" FNR ": unpinned base image"; failed=1 } END { exit failed }' \
-  idelium-fe/Dockerfile ideliumapi/Dockerfile ideliumdb/Dockerfile; then
+  idelium-fe/Dockerfile ideliumapi/Dockerfile ideliumdb/Dockerfile idelium-cli/Dockerfile; then
   :
 else
   exit 1
 fi
 
 if rg -n '(:latest|git clone|curl .*--insecure|curl .*-k\b|MYSQL_(ROOT_)?PASSWORD[=:][[:space:]]*[^$])' \
-  Dockerfile docker-compose.yml compose.*.yml idelium-fe ideliumapi ideliumdb 2>/dev/null; then
+  Dockerfile docker-compose.yml compose.*.yml idelium-fe ideliumapi ideliumdb idelium-cli 2>/dev/null; then
   echo "Mutable sources, disabled TLS, or embedded database passwords were found." >&2
   exit 1
 fi
@@ -23,6 +25,9 @@ fi
 for service in ideliumdb ideliumapi ideliumfe; do
   docker compose --env-file .env.example config | grep -q "  $service:"
 done
+
+docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium.yml config | grep -q "  selenium-grid:"
+docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.runner.yml --profile runner config | grep -q "  idelium-cli-runner:"
 
 test "$(docker compose --env-file .env.example config | grep -c 'no-new-privileges:true')" -eq 4
 

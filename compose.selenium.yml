@@ -1,0 +1,21 @@
+services:
+  selenium-grid:
+    image: selenium/standalone-chromium:4.27.0-20241204
+    shm_size: 2gb
+    ports:
+      - "${SELENIUM_GRID_PORT:-4444}:4444"
+    networks:
+      - idelium_net
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent --show-error http://127.0.0.1:4444/status | grep -q '\"ready\":true'",
+        ]
+      start_period: 15s
+      interval: 10s
+      timeout: 5s
+      retries: 12
