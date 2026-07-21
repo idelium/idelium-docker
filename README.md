@@ -301,6 +301,15 @@ Use project, cycle, and environment names from your own Idelium instance. The
 frontend container's development certificate is trusted by the browser only on
 the host; configure an appropriate CA bundle for non-demo runner workflows.
 
+### Appium 2 integration
+
+Appium execution is intentionally external to the base Docker stack because
+mobile infrastructure depends on host operating systems, SDKs, physical devices,
+emulators, simulators, signing configuration, or device-farm providers. Use the
+dedicated [Appium 2 integration guide](docs/appium-integration.md) for supported
+topologies, UiAutomator2/XCUITest examples, cloud provider placeholders, and
+troubleshooting guidance.
+
 ### Image and revision values
 
 `API_IMAGE`, `WEB_IMAGE`, and `DB_IMAGE` select local image repositories.
@@ -496,6 +505,7 @@ complete demo stack, waits for health, and exercises the public HTTPS endpoint.
 ├── start-idelium.sh         Mode-aware startup and smoke test
 ├── ideliumapi/              API Dockerfile, Apache, supervisor, and entrypoints
 ├── idelium-fe/              Web Dockerfile, Apache TLS proxy, and entrypoint
+├── idelium-cli/             Optional CLI runner Dockerfile and entrypoint
 ├── ideliumdb/               MariaDB Dockerfile and initialization SQL
 ├── scripts/                 Validation, build, secret, and smoke-test tools
 └── docs/                    Operational procedures
