@@ -7,6 +7,7 @@ done
 
 docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml config --quiet
 docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium.yml config --quiet
+docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium-cross-browser.yml config --quiet
 docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium.yml -f compose.runner.yml config --quiet
 
 if awk '/^FROM / && $2 !~ /@sha256:/ { print FILENAME ":" FNR ": unpinned base image"; failed=1 } END { exit failed }' \
@@ -27,6 +28,8 @@ for service in ideliumdb ideliumapi ideliumfe; do
 done
 
 docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium.yml config | grep -q "  selenium-grid:"
+docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium-cross-browser.yml config | grep -q "  selenium-node-chromium:"
+docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.selenium-cross-browser.yml config | grep -q "  selenium-node-firefox:"
 docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml -f compose.runner.yml --profile runner config | grep -q "  idelium-cli-runner:"
 
 test "$(docker compose --env-file .env.example config | grep -c 'no-new-privileges:true')" -eq 4

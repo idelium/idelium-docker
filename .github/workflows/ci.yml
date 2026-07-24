@@ -59,3 +59,44 @@ jobs:
         if: always()
         working-directory: idelium-docker
         run: docker compose -f docker-compose.yml -f compose.demo.yml down --volumes --remove-orphans
+
+  webdriver-cross-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out stack
+        uses: actions/checkout@v7
+
+      - name: Start pinned Selenium Grid with Chromium and Firefox nodes
+        run: |
+          docker compose \
+            --project-name idelium-webdriver-ci \
+            -f docker-compose.yml \
+            -f compose.demo.yml \
+            -f compose.selenium-cross-browser.yml \
+            up --detach --wait --wait-timeout 180 \
+            selenium-grid selenium-node-chromium selenium-node-firefox
+
+      - name: Run cross-browser WebDriver smoke test
+        run: ./scripts/selenium-cross-browser-smoke-test.sh
+
+      - name: Inspect Selenium service state
+        if: always()
+        run: |
+          docker compose \
+            --project-name idelium-webdriver-ci \
+            -f docker-compose.yml \
+            -f compose.demo.yml \
+            -f compose.selenium-cross-browser.yml \
+            ps
+
+      - name: Stop Selenium Grid
+        if: always()
+        run: |
+          docker compose \
+            --project-name idelium-webdriver-ci \
+            -f docker-compose.yml \
+            -f compose.demo.yml \
+            -f compose.selenium-cross-browser.yml \
+            down --volumes --remove-orphans

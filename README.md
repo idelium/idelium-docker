@@ -246,6 +246,36 @@ The smoke test creates a real Chrome WebDriver session through Grid, opens a
 small local data page, verifies the page title, and closes the session. It does
 not require Idelium credentials.
 
+For CI-grade cross-browser coverage, use the pinned Selenium Hub profile with
+Chromium and Firefox nodes:
+
+```bash
+docker compose \
+  --project-name idelium-selenium-cross-browser \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium-cross-browser.yml \
+  up -d --wait selenium-grid selenium-node-chromium selenium-node-firefox
+
+./scripts/selenium-cross-browser-smoke-test.sh
+
+docker compose \
+  --project-name idelium-selenium-cross-browser \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium-cross-browser.yml \
+  down --volumes --remove-orphans
+```
+
+The cross-browser smoke test runs the same representative WebDriver flow on
+Chrome-compatible Chromium and Firefox nodes, redacts WebDriver session ids from
+failure diagnostics, and closes every session before exiting. The pinned image
+set is `selenium/hub:4.27.0-20241204`,
+`selenium/node-chromium:4.27.0-20241204`, and
+`selenium/node-firefox:4.27.0-20241204`. Add Edge-compatible coverage by
+introducing a pinned Selenium Edge node in a separate reviewed overlay when the
+CI runner can support that browser image reliably.
+
 When you want the Idelium CLI inside the same Compose network as the API and
 Grid, add the optional runner overlay:
 
@@ -446,6 +476,26 @@ Run the optional Selenium Grid smoke test independently:
   -f docker-compose.yml \
   -f compose.demo.yml \
   -f compose.selenium.yml
+```
+
+Run the pinned cross-browser WebDriver smoke test independently:
+
+```bash
+docker compose \
+  --project-name idelium-selenium-cross-browser \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium-cross-browser.yml \
+  up -d --wait selenium-grid selenium-node-chromium selenium-node-firefox
+
+./scripts/selenium-cross-browser-smoke-test.sh
+
+docker compose \
+  --project-name idelium-selenium-cross-browser \
+  -f docker-compose.yml \
+  -f compose.demo.yml \
+  -f compose.selenium-cross-browser.yml \
+  down --volumes --remove-orphans
 ```
 
 ## Security model
