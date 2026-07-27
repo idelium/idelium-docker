@@ -1,0 +1,178 @@
+name: Idelium CI execution
+
+on:
+  workflow_dispatch:
+    inputs:
+      idelium_docker_ref:
+        description: Full commit SHA for idelium-docker.
+        required: true
+      idelium_api_ref:
+        description: Full commit SHA for idelium-api.
+        required: true
+      idelium_web_ref:
+        description: Full commit SHA for idelium-web.
+        required: true
+      idelium_cli_ref:
+        description: Full commit SHA for idelium-cli.
+        required: true
+      idelium_project_id:
+        description: Idelium project identifier to execute.
+        required: true
+      idelium_cycle_id:
+        description: Idelium cycle identifier to execute.
+        required: true
+      idelium_environment:
+        description: Idelium environment name.
+        required: true
+        default: ci
+      idelium_base_url:
+        description: HTTPS Idelium API/Web origin trusted by the CLI runner.
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  run-idelium:
+    name: Build stack and run Idelium cycle
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+
+    env:
+      DOCKER_BUILDKIT: "1"
+      COMPOSE_DOCKER_CLI_BUILD: "1"
+      IDELIUM_PROJECT_ID: ${{ inputs.idelium_project_id }}
+      IDELIUM_CYCLE_ID: ${{ inputs.idelium_cycle_id }}
+      IDELIUM_ENVIRONMENT: ${{ inputs.idelium_environment }}
+      IDELIUM_BASE_URL: ${{ inputs.idelium_base_url }}
+      IDELIUM_API_KEY: ${{ secrets.IDELIUM_API_KEY }}
+
+    steps:
+      - name: Validate pinned component revisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for ref in \
+            "${{ inputs.idelium_docker_ref }}" \
+            "${{ inputs.idelium_api_ref }}" \
+            "${{ inputs.idelium_web_ref }}" \
+            "${{ inputs.idelium_cli_ref }}"; do
+            if [[ ! "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "Every Idelium component ref must be a full 40-character commit SHA." >&2
+              exit 2
+            fi
+          done
+
+      - name: Check out Idelium Docker stack
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: idelium/idelium-docker
+          ref: ${{ inputs.idelium_docker_ref }}
+          path: idelium-docker
+
+      - name: Check out Idelium API
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: idelium/idelium-api
+          ref: ${{ inputs.idelium_api_ref }}
+          path: idelium-api
+
+      - name: Check out Idelium Web
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: idelium/idelium-web
+          ref: ${{ inputs.idelium_web_ref }}
+          path: idelium-web
+
+      - name: Check out Idelium CLI
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: idelium/idelium-cli
+          ref: ${{ inputs.idelium_cli_ref }}
+          path: idelium-cli
+
+      - name: Validate stack configuration
+        working-directory: idelium-docker
+        shell: bash
+        run: ./scripts/validate.sh
+
+      - name: Build immutable local images
+        working-directory: idelium-docker
+        shell: bash
+        run: ./scripts/build-local.sh --no-cache
+
+      - name: Start Idelium demo stack and wait for health
+        working-directory: idelium-docker
+        shell: bash
+        run: ./start-idelium.sh --demo
+
+      - name: Prepare protected CLI key and reports directory
+        working-directory: idelium-docker
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${IDELIUM_API_KEY:-}" ]; then
+            echo "IDELIUM_API_KEY secret is required." >&2
+            exit 2
+          fi
+          install -d -m 700 ci
+          install -d -m 755 reports
+          umask 077
+          printf '%s' "$IDELIUM_API_KEY" > ci/idelium-key
+          cat > ci/compose.idelium-runner.yml <<'YAML'
+          services:
+            idelium-cli-runner:
+              volumes:
+                - ./ci/idelium-key:/home/idelium/.idelium:ro
+                - ./reports:/workspace/reports
+          YAML
+
+      - name: Run Idelium cycle and write standard reports
+        id: idelium-cycle
+        working-directory: idelium-docker
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose \
+            -f docker-compose.yml \
+            -f compose.demo.yml \
+            -f compose.runner.yml \
+            -f ci/compose.idelium-runner.yml \
+            --profile runner \
+            run --rm idelium-cli-runner \
+            idelium \
+              --idProject="$IDELIUM_PROJECT_ID" \
+              --idCycle="$IDELIUM_CYCLE_ID" \
+              --environment="$IDELIUM_ENVIRONMENT" \
+              --ideliumwsBaseurl="$IDELIUM_BASE_URL" \
+              --jsonReport=/workspace/reports/idelium-report.json \
+              --htmlReport=/workspace/reports/idelium-report.html \
+              --markdownReport=/workspace/reports/idelium-report.md \
+              --junitReport=/workspace/reports/idelium-junit.xml
+
+      - name: Upload Idelium reports
+        if: always()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: idelium-reports
+          path: idelium-docker/reports/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Inspect final service state
+        if: always()
+        working-directory: idelium-docker
+        shell: bash
+        run: docker compose -f docker-compose.yml -f compose.demo.yml ps
+
+      - name: Stop Idelium stack
+        if: always()
+        working-directory: idelium-docker
+        shell: bash
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f compose.demo.yml \
+            -f compose.runner.yml \
+            --profile runner \
+            down --volumes --remove-orphans
