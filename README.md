@@ -14,6 +14,15 @@ The stack builds application sources from adjacent, fixed Git checkouts. It does
 not clone a moving branch during a build, use `latest` images, embed credentials,
 or expose the database and API directly to the host.
 
+## Product and enterprise planning
+
+- [Enterprise console walkthrough](idelium-console-walkthrough-enterprise.md)
+  explains the current product model, console flows, repository assessment, and
+  enterprise-readiness gaps.
+- [Enterprise roadmap](docs/enterprise-roadmap.md) converts that walkthrough
+  into release phases, epics, implementation tickets, acceptance criteria, and
+  enterprise-ready gates.
+
 ## Services
 
 ```text
