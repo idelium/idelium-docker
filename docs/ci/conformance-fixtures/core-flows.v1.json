@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "idelium-conformance-suite.v1",
+  "fixtureVersion": "1.0.0",
+  "compatibilityWindow": {
+    "minimumSupportedTrain": "current-1",
+    "currentTrain": "current",
+    "requiresMigrationGuideForBreakingChanges": true
+  },
+  "flows": [
+    {
+      "name": "authentication",
+      "assertions": [
+        "login succeeds with valid tenant-scoped credentials",
+        "login fails with invalid credentials",
+        "logout invalidates the session without using a browser-native alert",
+        "API key access is scoped to the owning customer and project"
+      ]
+    },
+    {
+      "name": "tenant-context",
+      "assertions": [
+        "list operations return only tenant-owned resources",
+        "read operations deny resources from another tenant",
+        "write operations attach the selected tenant and project",
+        "cross-tenant artifact access is denied"
+      ]
+    },
+    {
+      "name": "asset-lifecycle",
+      "assertions": [
+        "project lifecycle preserves ownership",
+        "environment lifecycle resolves project-scoped configuration",
+        "step lifecycle stores supported Selenium, Appium, Postman, and DSL metadata",
+        "test-cycle lifecycle preserves ordered steps and compatibility metadata"
+      ]
+    },
+    {
+      "name": "cycle-launch",
+      "assertions": [
+        "manual launch creates a queued execution",
+        "runner handoff uses bounded timeouts",
+        "missing dependencies fail with actionable diagnostics",
+        "failed required steps interrupt the test and preserve result evidence"
+      ]
+    },
+    {
+      "name": "parallel-execution",
+      "assertions": [
+        "worker metadata is isolated per execution",
+        "parallel reports merge deterministically",
+        "resource limits prevent unbounded execution growth",
+        "stale workers time out with explicit state"
+      ]
+    },
+    {
+      "name": "reporting",
+      "assertions": [
+        "JSON report follows the supported schema",
+        "HTML, Markdown, and JUnit exports are generated from the same result contract",
+        "reports redact credentials and tenant-sensitive values",
+        "artifact descriptors include checksum and authorized retrieval metadata"
+      ]
+    },
+    {
+      "name": "backward-compatibility",
+      "assertions": [
+        "current train accepts the previous compatible fixture",
+        "unsupported future schemas fail before execution",
+        "legacy behavior changes include a migration guide",
+        "release gates record compatibility evidence"
+      ]
+    }
+  ],
+  "securityAssertions": [
+    "tenant isolation",
+    "credential redaction",
+    "authorization denial",
+    "artifact access control",
+    "bounded retries",
+    "bounded timeouts"
+  ],
+  "diagnostics": {
+    "mustPublishArtifacts": true,
+    "mustRedactSecrets": true,
+    "mustIncludeCorrelationIds": true,
+    "mustAvoidCustomerPayloads": true
+  },
+  "gateThresholds": {
+    "requiredFlows": 7,
+    "requiredSecurityAssertions": 6,
+    "minimumCoveragePolicy": "thresholds cannot be lowered without an RFC or release decision record"
+  }
+}

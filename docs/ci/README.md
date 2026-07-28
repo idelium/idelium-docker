@@ -61,6 +61,7 @@ Run these non-mutating contract checks after changing the examples:
 ./scripts/cross-repository-contract-gate.sh
 ./scripts/supply-chain-provenance-gate.sh
 ./scripts/ha-reference-architecture-check.sh
+./scripts/conformance-suite-check.sh
 ```
 
 The checks fail when action/image references drift to moving major tags, required
@@ -75,7 +76,10 @@ credentials. The HA architecture check verifies that the production reference
 architecture continues to document trust boundaries, data flows, failure
 domains, scaling units, managed services, SLO/RPO/RTO assumptions, demo versus
 production separation, and failure-test evidence without introducing mutable
-image tags or literal credentials.
+image tags or literal credentials. The conformance suite check verifies the
+shared fixture used for authentication, tenant context, asset lifecycle, cycle
+launch, parallel execution, reporting, negative-security, and compatibility
+contracts.
 
 ## Adapting the examples
 
