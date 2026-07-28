@@ -59,6 +59,7 @@ Run these non-mutating contract checks after changing the examples:
 ./scripts/validate-github-actions-example.sh
 ./scripts/validate-gitlab-ci-example.sh
 ./scripts/cross-repository-contract-gate.sh
+./scripts/supply-chain-provenance-gate.sh
 ```
 
 The checks fail when action/image references drift to moving major tags, required
@@ -66,7 +67,10 @@ report outputs disappear, health readiness is no longer exercised, or obvious
 embedded credentials are introduced. The cross-repository gate additionally
 checks that the local CLI, API, Web, and Docker checkouts still expose the
 published authentication, configuration, execution, result, and report
-boundaries.
+boundaries. The supply-chain gate verifies Apache-2.0 licensing, package
+metadata, lockfiles, release artifact traceability, and provenance policy links
+across the four local repositories without mutating files or requiring
+credentials.
 
 ## Adapting the examples
 
