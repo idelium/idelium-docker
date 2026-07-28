@@ -63,6 +63,7 @@ Run these non-mutating contract checks after changing the examples:
 ./scripts/ha-reference-architecture-check.sh
 ./scripts/conformance-suite-check.sh
 ./scripts/recovery-gate-check.sh
+./scripts/observability-contract-check.sh
 ```
 
 The checks fail when action/image references drift to moving major tags, required
@@ -82,6 +83,9 @@ shared fixture used for authentication, tenant context, asset lifecycle, cycle
 launch, parallel execution, reporting, negative-security, and compatibility
 contracts. The recovery gate check verifies backup, restore, upgrade, rollback,
 RPO/RTO, migration-preflight, scheduled evidence, and startup readiness-gate
+requirements. The observability contract check verifies the optional
+observability profile, correlation contract, redacted telemetry, metrics, traces,
+dashboards, alerts, pinned image variables, health checks, and secret-file
 requirements.
 
 ## Adapting the examples
