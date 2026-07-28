@@ -51,7 +51,7 @@ verify_ref "idelium-cli" "$cli_repo" "${IDELIUM_CLI_REF:-}"
 require_pattern \
   "API Sanctum authentication boundary" \
   "$api_repo/routes/api.php" \
-  "middleware\\('auth:sanctum'\\)"
+  "middleware\\(.*auth:sanctum"
 require_pattern \
   "API Idelium-Key authentication boundary" \
   "$api_repo/app/Http/Middleware/AuthenticateIdeliumKey.php" \
