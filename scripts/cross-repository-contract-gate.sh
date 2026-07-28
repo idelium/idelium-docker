@@ -68,6 +68,10 @@ require_pattern \
   "API deterministic result aggregation" \
   "$api_repo/app/Http/Controllers/ParallelRunScheduleController.php" \
   "resultSummary|ksort"
+require_pattern \
+  "API enterprise plugin manifest contract" \
+  "$api_repo/app/Services/PluginManifestService.php" \
+  "idelium-plugin/1\\.1|sourceSha256|approvalStatus|provenanceReviewed"
 
 require_pattern \
   "Web project-scoped parallel run endpoint" \
@@ -81,6 +85,10 @@ require_pattern \
   "Web localized parallel monitoring labels" \
   "$web_repo/src/languages/english.js" \
   "Parallel executions"
+require_pattern \
+  "Web plugin approval metadata surface" \
+  "$web_repo/src/domain/pluginManifest.js" \
+  "approvalStatus|sourceSha256|provenanceReviewed|subprocess"
 
 require_pattern \
   "CLI non-interactive configuration inputs" \
@@ -94,6 +102,10 @@ require_pattern \
   "CLI canonical report writers" \
   "$cli_repo/src/idelium/_internal/ideliumws.py" \
   "write_json_report|write_junit_report"
+require_pattern \
+  "CLI enterprise plugin execution boundary" \
+  "$cli_repo/src/idelium/_internal/pluginapi.py" \
+  "idelium-plugin/1\\.1|sourceSha256|approvalStatus|subprocess"
 
 require_pattern \
   "Docker GitHub CI result artifacts" \
