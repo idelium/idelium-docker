@@ -184,6 +184,16 @@ files; secret values belong in ignored files or a deployment secret provider.
 | `TLS_MODE` | Frontend certificate policy | `production` |
 | `TLS_COMMON_NAME` | Development certificate common name | `localhost` |
 | `TLS_CERT_DIR` | Production directory containing certificate and key | `./certs` |
+| `IDELIUM_LAUNCHER_CA_BUNDLE` | Read-only in-container PEM bundle for a private remote-launcher CA | system trust store |
+| `IDELIUM_LAUNCHER_CONNECT_TIMEOUT` | Remote-launcher connection timeout in seconds | `5` |
+| `IDELIUM_LAUNCHER_TIMEOUT` | Remote-launcher response timeout in seconds | `30` |
+
+Remote launcher endpoints must use HTTPS. The API verifies certificate chains
+and hostnames and never enables its development-only insecure mode through the
+supported Docker stack. For a private CA, mount the public CA bundle read-only
+into both API services and set `IDELIUM_LAUNCHER_CA_BUNDLE` to the same
+in-container path. Legacy `http://` platform endpoints must be migrated before
+launching tests.
 
 ### Secret file paths
 
