@@ -131,5 +131,7 @@ Versioning verification should:
 ## Related policies
 
 - [Changelog and release notes](changelog-and-release-notes.md)
+- [Coordinated release train](coordinated-release-train.md)
 - [Release and rollback runbook](release-and-rollback-runbook.md)
+- [Supply-chain provenance](supply-chain-provenance-policy.md)
 - [RFC process](../rfc/README.md)

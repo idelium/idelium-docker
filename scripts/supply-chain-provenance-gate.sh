@@ -80,6 +80,8 @@ require_pattern "Idelium CLI package license metadata" "$CLI_REPO/setup.py" "lic
 require_pattern "Idelium CLI package version source" "$CLI_REPO/setup.py" "version=get_version"
 
 require_file "Supply-chain provenance policy" "$DOCKER_REPO/docs/release/supply-chain-provenance-policy.md"
+require_pattern "Coordinated release train matrix" "$DOCKER_REPO/docs/release/coordinated-release-train.md" "Supported compatibility matrix"
+require_pattern "Coordinated release train gates" "$DOCKER_REPO/docs/release/coordinated-release-train.md" "Release candidate gates"
 require_pattern "Release runbook artifact traceability" "$DOCKER_REPO/docs/release/release-and-rollback-runbook.md" "checksums"
 require_pattern "Version compatibility source references" "$DOCKER_REPO/docs/release/versioning-and-compatibility-policy.md" "source references"
 require_pattern "Release regression gate policy linkage" "$DOCKER_REPO/docs/ci/release-regression-gates.md" "release notes include the pinned source references"

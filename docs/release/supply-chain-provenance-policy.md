@@ -82,6 +82,7 @@ Each release note must link:
 - this policy;
 - the [release and rollback runbook](release-and-rollback-runbook.md);
 - the [versioning and compatibility policy](versioning-and-compatibility-policy.md);
+- the [coordinated release train](coordinated-release-train.md);
 - any dependency/license exception approved for the release.
 
 ## Deployment and rollback implications

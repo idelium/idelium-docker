@@ -114,4 +114,6 @@ Release-note verification should be reproducible and non-mutating:
 Use the [release and rollback runbook](release-and-rollback-runbook.md) for
 deployment execution. Use the [RFC process](../rfc/README.md) when a release
 changes compatibility windows, major contracts, deployment topology, persistence,
-or security boundaries.
+or security boundaries. Use the
+[coordinated release train](coordinated-release-train.md) when a release must
+publish a cross-component compatibility matrix.
