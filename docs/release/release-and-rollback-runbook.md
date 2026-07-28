@@ -137,6 +137,9 @@ After rollback or recovery:
 - confirm Docker service health checks are green;
 - confirm no secrets or customer data were exposed in recovery artifacts.
 
+Use the [backup, restore, upgrade, and rollback test plan](backup-restore-upgrade-test-plan.md)
+for scheduled recovery evidence, migration preflight, and startup failure gates.
+
 ## Non-mutating verification
 
 Runbook verification can be performed without changing deployment state by:

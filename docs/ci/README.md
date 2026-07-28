@@ -62,6 +62,7 @@ Run these non-mutating contract checks after changing the examples:
 ./scripts/supply-chain-provenance-gate.sh
 ./scripts/ha-reference-architecture-check.sh
 ./scripts/conformance-suite-check.sh
+./scripts/recovery-gate-check.sh
 ```
 
 The checks fail when action/image references drift to moving major tags, required
@@ -79,7 +80,9 @@ production separation, and failure-test evidence without introducing mutable
 image tags or literal credentials. The conformance suite check verifies the
 shared fixture used for authentication, tenant context, asset lifecycle, cycle
 launch, parallel execution, reporting, negative-security, and compatibility
-contracts.
+contracts. The recovery gate check verifies backup, restore, upgrade, rollback,
+RPO/RTO, migration-preflight, scheduled evidence, and startup readiness-gate
+requirements.
 
 ## Adapting the examples
 
