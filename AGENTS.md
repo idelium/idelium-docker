@@ -7,30 +7,35 @@ These rules extend the workspace-level Idelium engineering directives.
 1. **Use English for documentation and source-code comments.** This includes
    Dockerfile comments, shell-script messages, Compose descriptions, operational
    runbooks, and troubleshooting notes.
-2. **Build immutable artifacts.** Pin base-image versions or digests and application
+2. **Use `idelium.org` for public Idelium references.** Do not introduce new
+   `idelium.io` domains in Docker documentation, wiki material, demo defaults,
+   examples, screenshots, seed values, or Compose/environment defaults. When
+   touching existing references, migrate them to `idelium.org` unless an explicit
+   compatibility note requires a legacy alias.
+3. **Build immutable artifacts.** Pin base-image versions or digests and application
    revisions. Production and release configurations must not use `latest` or clone
    a moving branch during a build.
-3. **Never embed secrets.** Passwords, private keys, application keys, and tokens
+4. **Never embed secrets.** Passwords, private keys, application keys, and tokens
    must come from environment-specific secret management. Commit only documented
    placeholders and safe development defaults.
-4. **Use verified downloads.** Do not disable TLS validation. Pin downloaded tools
+5. **Use verified downloads.** Do not disable TLS validation. Pin downloaded tools
    and verify checksums or signatures when the upstream supports them.
-5. **Make startup deterministic.** Database migrations, seeds, and application
+6. **Make startup deterministic.** Database migrations, seeds, and application
    builds must finish successfully before the stack is reported ready. Avoid
    detached initialization commands whose result is not checked.
-6. **Define health and dependency readiness.** Database, API, and frontend services
+7. **Define health and dependency readiness.** Database, API, and frontend services
    require meaningful healthchecks. Depend on health, not merely on container
    process creation.
-7. **Separate development and production concerns.** Demo credentials, database
+8. **Separate development and production concerns.** Demo credentials, database
    seeds, self-signed certificates, mounted source, and debugging tools must not be
    enabled implicitly in a production configuration.
-8. **Run containers with minimum privilege.** Use non-root users where practical,
+9. **Run containers with minimum privilege.** Use non-root users where practical,
    minimize installed packages and image layers, and avoid exposing unnecessary
    ports or services.
-9. **Keep execution infrastructure optional.** Selenium Grid, CLI runners, Appium,
+10. **Keep execution infrastructure optional.** Selenium Grid, CLI runners, Appium,
    and similar execution services must live in explicit Compose override files or
    documented external topologies. Do not add them to the base API/Web/DB stack.
-10. **Treat mobile infrastructure as external unless explicitly reviewed.** Appium
+11. **Treat mobile infrastructure as external unless explicitly reviewed.** Appium
     servers, Android emulators, iOS simulators, USB devices, and device farms
     require documented topology, pinned images when containerized, health checks,
     and no embedded provider credentials.
