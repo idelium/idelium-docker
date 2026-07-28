@@ -60,6 +60,7 @@ Run these non-mutating contract checks after changing the examples:
 ./scripts/validate-gitlab-ci-example.sh
 ./scripts/cross-repository-contract-gate.sh
 ./scripts/supply-chain-provenance-gate.sh
+./scripts/ha-reference-architecture-check.sh
 ```
 
 The checks fail when action/image references drift to moving major tags, required
@@ -70,7 +71,11 @@ published authentication, configuration, execution, result, and report
 boundaries. The supply-chain gate verifies Apache-2.0 licensing, package
 metadata, lockfiles, release artifact traceability, and provenance policy links
 across the four local repositories without mutating files or requiring
-credentials.
+credentials. The HA architecture check verifies that the production reference
+architecture continues to document trust boundaries, data flows, failure
+domains, scaling units, managed services, SLO/RPO/RTO assumptions, demo versus
+production separation, and failure-test evidence without introducing mutable
+image tags or literal credentials.
 
 ## Adapting the examples
 
