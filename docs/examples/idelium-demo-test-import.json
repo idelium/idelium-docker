@@ -1,0 +1,20 @@
+{
+  "schema": "idelium.test-import.v1",
+  "name": "Idelium demo smoke test",
+  "description": "Open the public Idelium demo page and capture the initial browser state.",
+  "steps": [
+    {
+      "name": "Open Idelium demo",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "open_browser",
+          "url": "https://idelium.org/demo/",
+          "xpath": "//*",
+          "note": "Open the Idelium demo page"
+        }
+      ]
+    }
+  ]
+}

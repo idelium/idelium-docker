@@ -447,28 +447,29 @@ I Test sono scenari automatizzati composti da una sequenza ordinata di Step riut
 
 ### Esperienza osservata
 
-La pagina contiene tre tab:
+The page contains three tabs:
 
 - `MODIFY TEST`;
 - `CREATE TEST`;
-- `IMPORT SELENIUM IDE`.
+- `IMPORT IDELIUM JSON`.
 
-Nel flusso di creazione l’utente:
+In the creation flow, the user:
 
-1. inserisce nome e descrizione;
-2. filtra gli Step disponibili;
-3. trascina gli Step nel pannello Selected Step;
-4. ordina la sequenza;
-5. rimuove eventuali elementi;
-6. crea il Test.
+1. enters a name and description;
+2. filters the available steps;
+3. adds steps to the selected sequence;
+4. orders the sequence;
+5. removes any unwanted items;
+6. creates the test.
 
-Nel flusso di importazione Selenium IDE l’utente trascina un file `.side`. È disponibile un’opzione per privilegiare XPath. Il codice consente di:
+In the native Idelium JSON import flow, the user uploads a `.json` test
+definition. The import creates reusable Idelium steps and a test from a
+versionable source-controlled file. The flow allows the user to:
 
-- leggere gli step importati;
-- riordinarli;
-- rinominarli;
-- cambiare il locator/target;
-- salvare il risultato come asset Idelium.
+- review imported steps;
+- reorder them;
+- rename them;
+- save the result as Idelium test assets.
 
 ### Senso funzionale
 
@@ -492,7 +493,7 @@ Il Test è la rappresentazione di un caso d’uso verificabile, per esempio:
 
 - composizione visuale semplice;
 - riuso degli Step;
-- supporto a Selenium IDE come percorso di adozione;
+- support for native Idelium JSON import as an adoption path;
 - compatibilità con scenari browser e API;
 - ordine esplicito e modificabile.
 
@@ -514,9 +515,12 @@ Il Test è la rappresentazione di un caso d’uso verificabile, per esempio:
 - separazione visiva tra Test browser, API, mobile e ibridi;
 - tracciabilità commit/build/release.
 
-### Considerazione sull’import Selenium IDE
+### Native Idelium JSON import consideration
 
-L’import è utile per accelerare la migrazione, ma non dovrebbe diventare il modello canonico. La roadmap stessa indica che Idelium non vuole essere “un altro Selenium IDE”: l’import deve quindi essere un adapter di ingresso verso un modello Idelium validato, versionato e indipendente dal formato `.side`.
+Import is useful to accelerate adoption, but it should feed the canonical
+Idelium model instead of preserving legacy recorder formats. The import path is
+therefore a native Idelium JSON adapter that produces validated, versioned, and
+reusable test assets.
 
 ---
 
@@ -1251,7 +1255,7 @@ La pagina mostra:
 ## 6.2 Variante Selenium
 
 ```text
-Selenium IDE .side oppure Step Idelium
+Idelium JSON import or reusable Idelium Step
         ↓
 Normalizzazione locator e azioni
         ↓
@@ -1483,7 +1487,7 @@ La pagina richiede:
 La guida copre:
 
 - installazione del CLI in virtual environment;
-- import di un esempio Selenium IDE;
+- import of a native Idelium JSON example;
 - creazione di Test e Test Cycle;
 - salvataggio della chiave in `~/.idelium` con permessi restrittivi;
 - esecuzione tramite Project, Cycle ed Environment;
@@ -1671,7 +1675,7 @@ Single-page application Vue per amministrare Idelium e consultare i risultati pr
 - Environments;
 - Plugins;
 - Steps in Wizard/JSON/DSL;
-- Tests e import Selenium IDE;
+- Tests and native Idelium JSON import;
 - Test Cycles;
 - launcher remoto;
 - monitoraggio parallel run;
@@ -3148,7 +3152,7 @@ Idelium dovrebbe essere qualificato “enterprise-ready” soltanto quando sono 
 | `15-test-cycles-new.jpg` | Creazione Test Cycle e associazione Test |
 | `06-tests.jpg` | Modifica Test |
 | `16-tests-new.jpg` | Creazione Test e associazione Step |
-| `17-tests-import.jpg` | Import Selenium IDE |
+| `17-tests-import.jpg` | Import Idelium JSON |
 | `07-steps.jpg` | Elenco, ordine e azioni Step |
 | `18-steps-new.jpg` | Wizard creazione Step |
 | `08-environments.jpg` | Elenco Environment |
@@ -3281,4 +3285,3 @@ Il modello funzionale è valido e competitivo per una soluzione open source self
 - operabilità e compatibilità tra repository.
 
 Una volta chiusi i P0 e introdotti versionamento, RBAC, audit, artifact service e agent control plane, Idelium potrà sostenere in modo credibile il posizionamento di piattaforma enterprise open source per test automation centralizzata.
-

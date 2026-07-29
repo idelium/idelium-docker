@@ -223,6 +223,15 @@ The Docker stack allows `http://localhost:5173` and `http://127.0.0.1:5173` by
 default for local browser requests with Sanctum cookies. Restart the API
 container after changing `CORS_ALLOWED_ORIGINS` or `SANCTUM_STATEFUL_DOMAINS`.
 
+### Importing JSON tests from the web console
+
+Idelium supports a native JSON import format for creating a test and its
+reusable steps from the web console. To smoke-test the public demo page, upload
+[`docs/examples/idelium-demo-test-import.json`](docs/examples/idelium-demo-test-import.json)
+from **Tests > Import Idelium JSON**. The full format and UI procedure are
+documented in
+[`docs/importing-idelium-json-tests.md`](docs/importing-idelium-json-tests.md).
+
 ### Optional Selenium Grid and CLI runner profiles
 
 The base stack runs the Idelium portal, API, and database. Browser execution is
