@@ -1,10 +1,10 @@
 {
   "schema": "idelium.test-import.v1",
-  "name": "Idelium demo smoke test",
-  "description": "Open the public Idelium demo page, validate stable content, and exercise the fake login form.",
+  "name": "Idelium demo full component coverage",
+  "description": "Open https://idelium.org/demo/ and exercise every component family exposed by the demo page with stable data-testid selectors.",
   "steps": [
     {
-      "name": "Open Idelium demo",
+      "name": "Open Idelium demo page",
       "failedExit": true,
       "attachScreenshot": true,
       "steps": [
@@ -13,21 +13,37 @@
           "url": "https://idelium.org/demo/",
           "xpath": "//*",
           "note": "Open the Idelium demo page"
-        }
-      ]
-    },
-    {
-      "name": "Verify demo hero",
-      "failedExit": true,
-      "attachScreenshot": true,
-      "steps": [
+        },
         {
           "stepType": "wait_for_next_step",
           "findBy": "css",
           "target": "[data-testid='selenium-demo-page']",
           "waitCondition": "visibility",
           "waitSeconds": 15,
-          "note": "Verify the demo page container is visible"
+          "note": "Verify the main demo page container is visible"
+        }
+      ]
+    },
+    {
+      "name": "Verify hero, logo and console summary",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='demo-logo-link']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the logo link is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='demo-logo']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the logo image is visible"
         },
         {
           "stepType": "wait_for_next_step",
@@ -35,7 +51,7 @@
           "target": "//h1[contains(., 'Idelium Demo Lab')]",
           "waitCondition": "visibility",
           "waitSeconds": 10,
-          "note": "Verify the demo hero title is visible"
+          "note": "Verify the hero title is visible"
         },
         {
           "stepType": "wait_for_next_step",
@@ -44,27 +60,862 @@
           "waitCondition": "visibility",
           "waitSeconds": 10,
           "note": "Verify the Forms capability badge is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='capability-waits']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the Waits capability badge is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='capability-iframe']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the iframe capability badge is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='capability-shadow']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the Shadow DOM capability badge is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='demo-console']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the demo console summary is visible"
         }
       ]
     },
     {
-      "name": "Complete fake login form",
+      "name": "Exercise form controls",
       "failedExit": true,
       "attachScreenshot": true,
       "steps": [
         {
           "stepType": "wait_for_next_step",
           "findBy": "css",
-          "target": "[data-testid='login-username']",
+          "target": "[data-testid='demo-form']",
           "waitCondition": "visibility",
           "waitSeconds": 10,
-          "note": "Wait for the fake login username field"
+          "note": "Verify the form container is visible"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='name-input']",
+          "text": "Ada Lovelace",
+          "note": "Write the demo name"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='email-input']",
+          "text": "ada@example.org",
+          "note": "Write the demo email"
+        },
+        {
+          "stepType": "select",
+          "findBy": "css",
+          "target": "[data-testid='role-select']",
+          "selectType": "value",
+          "value": "qa",
+          "note": "Select the QA role"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='target-web-radio']",
+          "note": "Select the web automation target"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='target-api-radio']",
+          "note": "Select the API automation target"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='target-mobile-radio']",
+          "note": "Select the mobile automation target"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='terms-checkbox']",
+          "note": "Accept the demo terms"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='priority-range']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the priority range input is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='priority-value']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the priority value label is visible"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='notes-textarea']",
+          "text": "Full Idelium demo coverage generated from the native JSON import.",
+          "note": "Write notes in the textarea"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='submit-button']",
+          "note": "Submit the demo form"
+        }
+      ]
+    },
+    {
+      "name": "Exercise dynamic content, tabs, modal, alert and toast",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='load-delayed-button']",
+          "note": "Trigger the delayed content area"
+        },
+        {
+          "stepType": "sleep",
+          "seconds": 2,
+          "note": "Wait for delayed content to render"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='toggle-hidden-button']",
+          "note": "Reveal the hidden panel"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='hidden-panel']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the hidden panel is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='tab-overview']",
+          "note": "Open the Overview tab"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='tab-details']",
+          "note": "Open the Details tab"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='tab-panel']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the tab panel is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='tab-logs']",
+          "note": "Open the Logs tab"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='open-modal-button']",
+          "note": "Open the demo modal"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": ".demo-modal",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the demo modal is visible"
+        },
+        {
+          "stepType": "selenium_command",
+          "operation": "execute_script",
+          "script": "const modal = document.querySelector('.demo-modal'); if (modal) { const button = modal.querySelector('button'); if (button) { button.click(); } else { modal.remove(); } }",
+          "note": "Close the demo modal"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='native-alert-button']",
+          "note": "Open the native browser alert"
+        },
+        {
+          "stepType": "selenium_command",
+          "operation": "accept_alert",
+          "note": "Accept the native browser alert"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='show-toast-button']",
+          "note": "Show the toast notification"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": ".demo-toast",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the toast notification is visible"
+        }
+      ]
+    },
+    {
+      "name": "Exercise searchable table and row actions",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='demo-table']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the searchable table is visible"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='table-search']",
+          "text": "smoke",
+          "note": "Search the table for smoke tests"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='table-count']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the filtered row count is visible"
         },
         {
           "stepType": "clear",
           "findBy": "css",
-          "target": "[data-testid='login-username']",
-          "note": "Clear the fake login username field"
+          "target": "[data-testid='table-search']",
+          "note": "Clear the table search before validating every row"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='sort-name']",
+          "note": "Sort the table by name"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='sort-status']",
+          "note": "Sort the table by status"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='run-row-api']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the API regression row exists"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='run-row-mobile']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the mobile checkout row exists"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='run-row-plugins']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the plugin workflow row exists"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='run-row-smoke']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the smoke web suite row exists"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-view-api']",
+          "note": "Open the API regression view action"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-retry-api']",
+          "note": "Open the API regression retry action"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-view-mobile']",
+          "note": "Open the mobile checkout view action"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-retry-mobile']",
+          "note": "Open the mobile checkout retry action"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-view-plugins']",
+          "note": "Open the plugin workflow view action"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-retry-plugins']",
+          "note": "Open the plugin workflow retry action"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-view-smoke']",
+          "note": "Open the smoke web suite view action"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-retry-smoke']",
+          "note": "Open the smoke web suite retry action"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='row-action-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the row action result is visible"
+        }
+      ]
+    },
+    {
+      "name": "Exercise keyboard, drag targets, Shadow DOM and iframe",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='keyboard-input']",
+          "text": "keyboard coverage",
+          "note": "Write in the keyboard test input"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='keyboard-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the keyboard result area is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='drag-source']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the drag source is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='drop-target']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the drop target is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='shadow-host']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the Shadow DOM host is visible"
+        },
+        {
+          "stepType": "selenium_command",
+          "operation": "shadow_find_element",
+          "findBy": "css",
+          "target": "[data-testid='shadow-host']",
+          "shadowFindBy": "css",
+          "shadowTarget": "button",
+          "note": "Verify that a Shadow DOM element can be found"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='demo-iframe']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the iframe is visible"
+        },
+        {
+          "stepType": "switch_to_frame",
+          "findBy": "css",
+          "target": "[data-testid='demo-iframe']",
+          "note": "Switch to the demo iframe"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='iframe-button']",
+          "note": "Click the button inside the iframe"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='iframe-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the iframe result is visible"
+        },
+        {
+          "stepType": "switch_to_default_content",
+          "xpath": "//*",
+          "note": "Return to the main document"
+        }
+      ]
+    },
+    {
+      "name": "Verify HTML5 inputs, upload and download surfaces",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='file-input']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the file upload input exists"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='file-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the file upload result area is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='date-input']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the date input is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='time-input']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the time input is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='datetime-input']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the datetime input is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='color-input']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the color input is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='readonly-input']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the readonly input is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='disabled-input']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the disabled input exists"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='html5-summary']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the HTML5 summary is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='download-link']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the download link is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='new-window-link']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the new-window link is visible"
+        }
+      ]
+    },
+    {
+      "name": "Exercise validation, autocomplete, tooltip, popover and accordion",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='validation-username']",
+          "text": "qauser",
+          "note": "Write a valid validation username"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='validation-email']",
+          "text": "qa@example.org",
+          "note": "Write a valid validation email"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='validate-fields-button']",
+          "note": "Validate the fields"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='validation-success']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the validation success area is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='autocomplete-widget']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the autocomplete widget is visible"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='autocomplete-input']",
+          "text": "selenium",
+          "note": "Type into the autocomplete input"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='autocomplete-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the autocomplete result area is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='tooltip-trigger']",
+          "note": "Trigger the tooltip"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='tooltip-content']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the tooltip content exists"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='popover-trigger']",
+          "note": "Toggle the popover"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "xpath",
+          "target": "//*[contains(@class, 'demo-popover')]",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the popover is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='accordion']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the accordion is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='accordion-panel-selectors']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the selectors accordion panel is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='accordion-trigger-selectors']",
+          "note": "Toggle the selectors accordion panel"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='accordion-trigger-states']",
+          "note": "Toggle the states accordion panel"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='accordion-panel-states']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the states accordion panel is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='accordion-trigger-browser']",
+          "note": "Toggle the browser accordion panel"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='accordion-panel-browser']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the browser accordion panel is visible"
+        }
+      ]
+    },
+    {
+      "name": "Exercise pagination, infinite list, storage and stale node",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='pagination-widget']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the pagination widget is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='paginated-list']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the paginated list is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='page-item-auth']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the auth page item is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='page-item-checkout']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the checkout page item is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='page-item-api-contract']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the API contract page item is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='pagination-next']",
+          "note": "Go to the next page"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='pagination-status']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the pagination status is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='pagination-prev']",
+          "note": "Go back to the previous page"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='infinite-list']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the incremental list is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='infinite-item-auth']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the auth incremental item is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='infinite-item-checkout']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the checkout incremental item is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='infinite-item-api-contract']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the API contract incremental item is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='infinite-item-mobile']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the mobile incremental item is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='load-more-button']",
+          "note": "Load more incremental list items"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='storage-widget']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the storage widget is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='save-storage-button']",
+          "note": "Save browser storage"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='read-storage-button']",
+          "note": "Read browser storage"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='clear-storage-button']",
+          "note": "Clear browser storage"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='storage-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the storage result is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='replace-node-button']",
+          "note": "Replace the stale target DOM node"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='stale-target']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the stale target replacement is visible"
+        }
+      ]
+    },
+    {
+      "name": "Exercise fake login and guided wizard",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='fake-login-form']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the fake login form is visible"
         },
         {
           "stepType": "write",
@@ -72,12 +923,6 @@
           "target": "[data-testid='login-username']",
           "text": "demo",
           "note": "Write the fake login username"
-        },
-        {
-          "stepType": "clear",
-          "findBy": "css",
-          "target": "[data-testid='login-password']",
-          "note": "Clear the fake login password field"
         },
         {
           "stepType": "write",
@@ -94,40 +939,146 @@
         },
         {
           "stepType": "wait_for_next_step",
-          "findBy": "xpath",
-          "target": "//*[@data-testid='login-result' and contains(., 'Signed in')]",
+          "findBy": "css",
+          "target": "[data-testid='login-result']",
           "waitCondition": "visibility",
           "waitSeconds": 10,
-          "note": "Verify the fake login result"
-        }
-      ]
-    },
-    {
-      "name": "Verify execution table",
-      "failedExit": true,
-      "attachScreenshot": true,
-      "steps": [
+          "note": "Verify the fake login result is visible"
+        },
         {
           "stepType": "wait_for_next_step",
           "findBy": "css",
-          "target": "[data-testid='run-row-smoke']",
+          "target": "[data-testid='wizard']",
           "waitCondition": "visibility",
           "waitSeconds": 10,
-          "note": "Verify the smoke web suite row is visible"
+          "note": "Verify the wizard is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='wizard-step-1']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify wizard step 1 is visible"
         },
         {
           "stepType": "click",
           "findBy": "css",
-          "target": "[data-testid='run-view-smoke']",
-          "note": "Open the smoke web suite row action"
+          "target": "[data-testid='wizard-next']",
+          "note": "Move to wizard step 2"
         },
         {
           "stepType": "wait_for_next_step",
           "findBy": "css",
-          "target": "[data-testid='row-action-result']",
+          "target": "[data-testid='wizard-step-2']",
           "waitCondition": "visibility",
           "waitSeconds": 10,
-          "note": "Verify the row action result is visible"
+          "note": "Verify wizard step 2 is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='wizard-next']",
+          "note": "Move to wizard step 3"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='wizard-step-3']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify wizard step 3 is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='wizard-panel']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the wizard panel is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='wizard-prev']",
+          "note": "Move back in the wizard"
+        }
+      ]
+    },
+    {
+      "name": "Exercise network, responsive markers and flaky simulator",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='network-success']",
+          "note": "Run the network success mock"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='network-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the network result is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='network-error']",
+          "note": "Run the network error mock"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='network-timeout']",
+          "note": "Run the network timeout mock"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='marker-desktop']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the desktop responsive marker exists"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='marker-tablet']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the tablet responsive marker exists"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='marker-mobile']",
+          "waitCondition": "presence",
+          "waitSeconds": 10,
+          "note": "Verify the mobile responsive marker exists"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='flaky-start']",
+          "note": "Start the flaky sequence simulator"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='flaky-status']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the flaky simulator status is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='flaky-reset']",
+          "note": "Reset the flaky sequence simulator"
         }
       ]
     }
