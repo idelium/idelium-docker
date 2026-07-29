@@ -34,6 +34,23 @@ docker compose --env-file .env.example -f docker-compose.yml -f compose.demo.yml
 
 test "$(docker compose --env-file .env.example config | grep -c 'no-new-privileges:true')" -eq 4
 
+test -f docs/ci/github-actions-idelium.yml
+test -f docs/ci/gitlab-ci-idelium.yml
+test -f docs/ci/README.md
+
+grep -q 'actions/upload-artifact@v4' docs/ci/github-actions-idelium.yml
+grep -q 'artifacts:' docs/ci/gitlab-ci-idelium.yml
+grep -q 'junit:' docs/ci/gitlab-ci-idelium.yml
+grep -q '^[[:space:]]*--junitReport=' docs/ci/github-actions-idelium.yml
+grep -q '^[[:space:]]*--junitReport=' docs/ci/gitlab-ci-idelium.yml
+grep -q '\[0-9a-f\]{40}' docs/ci/github-actions-idelium.yml
+grep -q '\[0-9a-f\]{40}' docs/ci/gitlab-ci-idelium.yml
+
+if rg -n '(:latest|--insecure|[[:space:]]-k\b|^[[:space:]]*IDELIUM_API_KEY:[[:space:]]*[^$[:space:]])' docs/ci; then
+  echo "CI examples must pin dependencies, preserve TLS verification, and avoid embedded secrets." >&2
+  exit 1
+fi
+
 grep -q 'Content-Security-Policy' idelium-fe/conf/httpd-vhosts-idelium-ssl.conf
 grep -q 'X-Content-Type-Options' idelium-fe/conf/httpd-vhosts-idelium-ssl.conf
 grep -q 'frame-ancestors' idelium-fe/conf/httpd-vhosts-idelium-ssl.conf

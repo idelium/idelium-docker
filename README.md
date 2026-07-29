@@ -265,6 +265,14 @@ The smoke test creates a real Chrome WebDriver session through Grid, opens a
 small local data page, verifies the page title, and closes the session. It does
 not require Idelium credentials.
 
+### CI/CD integration examples
+
+Pinned GitHub Actions and GitLab CI examples are available under
+[`docs/ci/`](docs/ci/). They validate immutable component revisions, start the
+stack, run Idelium CLI non-interactively, preserve CLI exit codes, and publish
+JSON, HTML, Markdown, and JUnit reports as CI artifacts without printing API
+keys.
+
 For CI-grade cross-browser coverage, use the pinned Selenium Hub profile with
 Chromium and Firefox nodes:
 
@@ -652,4 +660,4 @@ behavior changes.
 - [`idelium-web`](https://github.com/idelium/idelium-web) — Vue administration UI.
 - [`idelium-cli`](https://github.com/idelium/idelium-cli) — test execution agent.
 
-Project information is available at [idelium.io](https://idelium.io/).
+Project information is available at [idelium.org](https://idelium.org/).
