@@ -1,7 +1,7 @@
 {
   "schema": "idelium.test-import.v1",
   "name": "Idelium demo smoke test",
-  "description": "Open the public Idelium demo page and capture the initial browser state.",
+  "description": "Open the public Idelium demo page, validate stable content, and exercise the fake login form.",
   "steps": [
     {
       "name": "Open Idelium demo",
@@ -13,6 +13,121 @@
           "url": "https://idelium.org/demo/",
           "xpath": "//*",
           "note": "Open the Idelium demo page"
+        }
+      ]
+    },
+    {
+      "name": "Verify demo hero",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='selenium-demo-page']",
+          "waitCondition": "visibility",
+          "waitSeconds": 15,
+          "note": "Verify the demo page container is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "xpath",
+          "target": "//h1[contains(., 'Idelium Demo Lab')]",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the demo hero title is visible"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='capability-form']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the Forms capability badge is visible"
+        }
+      ]
+    },
+    {
+      "name": "Complete fake login form",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='login-username']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Wait for the fake login username field"
+        },
+        {
+          "stepType": "clear",
+          "findBy": "css",
+          "target": "[data-testid='login-username']",
+          "note": "Clear the fake login username field"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='login-username']",
+          "text": "demo",
+          "note": "Write the fake login username"
+        },
+        {
+          "stepType": "clear",
+          "findBy": "css",
+          "target": "[data-testid='login-password']",
+          "note": "Clear the fake login password field"
+        },
+        {
+          "stepType": "write",
+          "findBy": "css",
+          "target": "[data-testid='login-password']",
+          "text": "demo",
+          "note": "Write the fake login password"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='login-submit']",
+          "note": "Submit the fake login form"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "xpath",
+          "target": "//*[@data-testid='login-result' and contains(., 'Signed in')]",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the fake login result"
+        }
+      ]
+    },
+    {
+      "name": "Verify execution table",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "steps": [
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='run-row-smoke']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the smoke web suite row is visible"
+        },
+        {
+          "stepType": "click",
+          "findBy": "css",
+          "target": "[data-testid='run-view-smoke']",
+          "note": "Open the smoke web suite row action"
+        },
+        {
+          "stepType": "wait_for_next_step",
+          "findBy": "css",
+          "target": "[data-testid='row-action-result']",
+          "waitCondition": "visibility",
+          "waitSeconds": 10,
+          "note": "Verify the row action result is visible"
         }
       ]
     }
