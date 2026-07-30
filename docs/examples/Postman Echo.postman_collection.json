@@ -1580,8 +1580,8 @@
 									"    tests[\"Body contains cookies\"] = responseBody.has(\"cookies\");",
 									"    ",
 									"    var body = JSON.parse(responseBody);",
-									"    tests[\"Body contains cookie foo1\"] = 'foo1' in body.cookies;",
-									"    tests[\"Body contains cookie foo2\"] = 'foo2' in body.cookies;",
+									"    tests[\"Body does not contain cookie foo1\"] = !('foo1' in body.cookies);",
+									"    tests[\"Body does not contain cookie foo2\"] = !('foo2' in body.cookies);",
 									"",
 									"}",
 									"else if (responseCode.code === 302) {",
@@ -1592,9 +1592,9 @@
 									"    tests[\"Status code is 302 or 200\"] = false;",
 									"}",
 									"",
-									"tests[\"foo1 cookie is set\"] = _.get(postman.getResponseCookie('foo1'), 'value') === undefined;",
+									"tests[\"foo1 cookie is removed\"] = _.get(postman.getResponseCookie('foo1'), 'value') === undefined;",
 									"",
-									"tests[\"foo2 cookie is set\"] = _.get(postman.getResponseCookie('foo2'), 'value') === undefined;"
+									"tests[\"foo2 cookie is removed\"] = _.get(postman.getResponseCookie('foo2'), 'value') === undefined;"
 								]
 							}
 						}
@@ -3841,10 +3841,10 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var after = JSON.parse(responseBody).after;",
+									"var between = JSON.parse(responseBody).between;",
 									"",
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"tests[\"Comparsion was correct\"] = after === false;"
+									"tests[\"Comparison was correct\"] = between === false;"
 								]
 							}
 						}
