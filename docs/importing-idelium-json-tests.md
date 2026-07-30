@@ -4,7 +4,9 @@ Idelium supports a native JSON import format for creating a test and its reusabl
 steps from the web console. The import is useful when a test must be prepared in
 source control, reviewed, and then loaded into a project from the UI.
 
-The import workflow accepts Idelium JSON definitions only.
+The import workflow accepts native Idelium JSON definitions and Postman
+collection JSON files. A Postman collection is converted into an executable
+Idelium Postman step during import.
 
 ## How to test the public demo page
 
@@ -58,3 +60,16 @@ https://idelium.org/demo/
 The top-level `steps` array defines the reusable Idelium steps that will be
 created for the imported test. Each reusable step contains its executable
 actions in its nested `steps` array.
+
+## Postman collection import
+
+You can also upload a Postman collection file directly, for example:
+
+```text
+docs/examples/Postman Echo.postman_collection.json
+```
+
+The web console converts the collection into an Idelium step with a
+`postman_collection` action. Postman steps must include the collection payload;
+empty Postman steps are rejected during import so the CLI can persist request,
+assertion, timing, and response details for the execution results page.
