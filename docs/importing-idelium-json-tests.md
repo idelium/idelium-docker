@@ -32,6 +32,37 @@ The example creates a Selenium-runtime step that opens:
 https://idelium.org/demo/
 ```
 
+## How to test the demo page with Idelium DSL
+
+Use this DSL-based import when you want the same browser coverage expressed as
+versioned Idelium DSL source:
+
+```text
+docs/examples/idelium-demo-dsl-test-import.json
+```
+
+The file is still an `idelium.test-import.v1` JSON document, so it is imported
+from the same web-console workflow. Its executable action uses:
+
+```json
+{
+  "stepType": "dsl",
+  "runtime": "dsl",
+  "schemaVersion": "dsl.source.v1",
+  "languageVersion": "1.0"
+}
+```
+
+The DSL example covers the browser component families that DSL v1 supports:
+navigation, explicit waits, visibility checks, text/value assertions, counts,
+clicks, text entry, conditionally visible widgets, pagination, storage controls,
+network-status controls, flaky-state controls, and screenshots.
+
+DSL v1 does not yet include dedicated commands for native select mutation,
+browser alerts, iframe switching, Shadow DOM traversal, arbitrary JavaScript, or
+Postman/Newman execution. Keep using the native JSON and Postman examples for
+those advanced surfaces until the DSL language adds explicit commands for them.
+
 ## Import format
 
 ```json
