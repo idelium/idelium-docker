@@ -1,21 +1,221 @@
 {
   "schema": "idelium.test-import.v1",
   "name": "Idelium demo DSL full component coverage",
-  "description": "Open https://idelium.org/demo/ and exercise the browser component families supported by Idelium DSL v1 with stable data-testid selectors.",
+  "description": "Open https://idelium.org/demo/ and exercise the browser component families supported by Idelium DSL v1 with stable data-testid selectors. The import is split into granular Idelium steps so execution results match the Selenium example detail level.",
   "steps": [
     {
-      "name": "Run Idelium demo DSL browser coverage",
+      "name": "Open Idelium demo page",
       "editorType": "dsl",
       "failedExit": true,
-      "attachScreenshot": true,
+      "attachScreenshot": false,
+      "description": "Open https://idelium.org/demo/ and verify the main demo container is ready.",
       "steps": [
         {
           "stepType": "dsl",
           "runtime": "dsl",
           "schemaVersion": "dsl.source.v1",
           "languageVersion": "1.0",
-          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Idelium demo DSL browser component coverage\" {\n    let baseUrl = \"https://idelium.org/demo/\"\n\n    open \"${baseUrl}\"\n    wait css \"[data-testid='selenium-demo-page']\" visible timeout 15s\n    assert url contains \"idelium.org/demo\"\n    assert visible css \"[data-testid='demo-logo-link']\"\n    assert visible css \"[data-testid='demo-logo']\"\n    assert text xpath \"//h1\" contains \"Idelium Demo Lab\"\n    assert visible css \"[data-testid='capability-form']\"\n    assert visible css \"[data-testid='capability-waits']\"\n    assert visible css \"[data-testid='capability-iframe']\"\n    assert visible css \"[data-testid='capability-shadow']\"\n    assert visible css \"[data-testid='demo-console']\"\n\n    wait css \"[data-testid='demo-form']\" visible timeout 10s\n    write css \"[data-testid='name-input']\" value \"Ada Lovelace\"\n    write css \"[data-testid='email-input']\" value \"ada@example.org\"\n    assert value css \"[data-testid='name-input']\" equals \"Ada Lovelace\"\n    assert value css \"[data-testid='email-input']\" contains \"ada@example.org\"\n    click css \"[data-testid='target-web-radio']\"\n    click css \"[data-testid='target-api-radio']\"\n    click css \"[data-testid='target-mobile-radio']\"\n    click css \"[data-testid='terms-checkbox']\"\n    assert visible css \"[data-testid='priority-range']\"\n    assert visible css \"[data-testid='priority-value']\"\n    write css \"[data-testid='notes-textarea']\" value \"Full Idelium demo coverage generated from the DSL import.\"\n    assert value css \"[data-testid='notes-textarea']\" contains \"DSL import\"\n    click css \"[data-testid='submit-button']\"\n\n    click css \"[data-testid='load-delayed-button']\"\n    click css \"[data-testid='toggle-hidden-button']\"\n    wait css \"[data-testid='hidden-panel']\" visible timeout 10s\n    click css \"[data-testid='tab-overview']\"\n    click css \"[data-testid='tab-details']\"\n    wait css \"[data-testid='tab-panel']\" visible timeout 10s\n    click css \"[data-testid='tab-logs']\"\n    click css \"[data-testid='show-toast-button']\"\n    wait css \".demo-toast\" visible timeout 10s\n\n    wait css \"[data-testid='demo-table']\" visible timeout 10s\n    wait css \"[data-testid='table-search']\" visible timeout 10s\n    wait css \"[data-testid='table-count']\" visible timeout 10s\n    assert count css \"[data-testid^='run-row-']\" at_least 1\n    click css \"[data-testid='sort-name']\"\n    click css \"[data-testid='sort-status']\"\n    wait css \"[data-testid='run-row-api']\" present timeout 10s\n    wait css \"[data-testid='run-row-mobile']\" present timeout 10s\n    wait css \"[data-testid='run-row-plugins']\" present timeout 10s\n    wait css \"[data-testid='run-row-smoke']\" present timeout 10s\n    click css \"[data-testid='run-view-api']\"\n    wait css \"[data-testid='row-action-result']\" visible timeout 10s\n    write css \"[data-testid='table-search']\" value \"smoke\"\n    wait css \"[data-testid='table-count']\" visible timeout 10s\n\n    write css \"[data-testid='keyboard-input']\" value \"keyboard coverage\"\n    wait css \"[data-testid='keyboard-result']\" visible timeout 10s\n    wait css \"[data-testid='drag-source']\" visible timeout 10s\n    wait css \"[data-testid='drop-target']\" visible timeout 10s\n    wait css \"[data-testid='shadow-host']\" visible timeout 10s\n    wait css \"[data-testid='demo-iframe']\" visible timeout 10s\n\n    wait css \"[data-testid='file-input']\" present timeout 10s\n    wait css \"[data-testid='file-result']\" visible timeout 10s\n    wait css \"[data-testid='date-input']\" visible timeout 10s\n    wait css \"[data-testid='time-input']\" visible timeout 10s\n    wait css \"[data-testid='datetime-input']\" visible timeout 10s\n    wait css \"[data-testid='color-input']\" visible timeout 10s\n    wait css \"[data-testid='readonly-input']\" visible timeout 10s\n    wait css \"[data-testid='disabled-input']\" present timeout 10s\n    wait css \"[data-testid='html5-summary']\" visible timeout 10s\n    wait css \"[data-testid='download-link']\" visible timeout 10s\n    wait css \"[data-testid='new-window-link']\" visible timeout 10s\n\n    write css \"[data-testid='validation-username']\" value \"qauser\"\n    write css \"[data-testid='validation-email']\" value \"qa@example.org\"\n    click css \"[data-testid='validate-fields-button']\"\n    wait css \"[data-testid='validation-success']\" visible timeout 10s\n    wait css \"[data-testid='autocomplete-widget']\" visible timeout 10s\n    write css \"[data-testid='autocomplete-input']\" value \"selenium\"\n    wait css \"[data-testid='autocomplete-result']\" visible timeout 10s\n    click css \"[data-testid='tooltip-trigger']\"\n    wait css \"[data-testid='tooltip-content']\" present timeout 10s\n    click css \"[data-testid='popover-trigger']\"\n    wait xpath \"//*[contains(@class, 'demo-popover')]\" visible timeout 10s\n    wait css \"[data-testid='accordion']\" visible timeout 10s\n    wait css \"[data-testid='accordion-panel-selectors']\" visible timeout 10s\n    click css \"[data-testid='accordion-trigger-states']\"\n    wait css \"[data-testid='accordion-panel-states']\" visible timeout 10s\n    click css \"[data-testid='accordion-trigger-browser']\"\n    wait css \"[data-testid='accordion-panel-browser']\" visible timeout 10s\n\n    wait css \"[data-testid='pagination-widget']\" visible timeout 10s\n    wait css \"[data-testid='paginated-list']\" visible timeout 10s\n    wait css \"[data-testid='page-item-auth']\" visible timeout 10s\n    wait css \"[data-testid='page-item-checkout']\" visible timeout 10s\n    wait css \"[data-testid='page-item-api-contract']\" visible timeout 10s\n    click css \"[data-testid='pagination-next']\"\n    wait css \"[data-testid='pagination-status']\" visible timeout 10s\n    click css \"[data-testid='pagination-prev']\"\n    wait css \"[data-testid='infinite-list']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-auth']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-checkout']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-api-contract']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-mobile']\" visible timeout 10s\n    click css \"[data-testid='load-more-button']\"\n    wait css \"[data-testid='storage-widget']\" visible timeout 10s\n    click css \"[data-testid='save-storage-button']\"\n    click css \"[data-testid='read-storage-button']\"\n    click css \"[data-testid='clear-storage-button']\"\n    wait css \"[data-testid='storage-result']\" visible timeout 10s\n    click css \"[data-testid='replace-node-button']\"\n    wait css \"[data-testid='stale-target']\" visible timeout 10s\n\n    wait css \"[data-testid='fake-login-form']\" visible timeout 10s\n    write css \"[data-testid='login-username']\" value \"demo\"\n    write css \"[data-testid='login-password']\" value \"demo\"\n    click css \"[data-testid='login-submit']\"\n    wait css \"[data-testid='login-result']\" visible timeout 10s\n    wait css \"[data-testid='wizard']\" visible timeout 10s\n    wait css \"[data-testid='wizard-step-1']\" visible timeout 10s\n    click css \"[data-testid='wizard-next']\"\n    wait css \"[data-testid='wizard-step-2']\" visible timeout 10s\n    click css \"[data-testid='wizard-next']\"\n    wait css \"[data-testid='wizard-step-3']\" visible timeout 10s\n    wait css \"[data-testid='wizard-panel']\" visible timeout 10s\n    click css \"[data-testid='wizard-prev']\"\n\n    click css \"[data-testid='network-success']\"\n    wait css \"[data-testid='network-result']\" visible timeout 10s\n    click css \"[data-testid='network-error']\"\n    wait css \"[data-testid='network-result']\" visible timeout 10s\n    click css \"[data-testid='network-timeout']\"\n    wait css \"[data-testid='network-result']\" visible timeout 10s\n    wait css \"[data-testid='marker-desktop']\" present timeout 10s\n    wait css \"[data-testid='marker-tablet']\" present timeout 10s\n    wait css \"[data-testid='marker-mobile']\" present timeout 10s\n    click css \"[data-testid='flaky-start']\"\n    wait css \"[data-testid='flaky-status']\" visible timeout 10s\n    click css \"[data-testid='flaky-reset']\"\n\n    screenshot \"idelium-demo-dsl-coverage\"\n}\n",
-          "note": "Run the Idelium DSL browser coverage for the public demo page"
+          "name": "Open Idelium demo page",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Open Idelium demo page\" {\n    let baseUrl = \"https://idelium.org/demo/\"\n\n    open \"${baseUrl}\"\n    wait css \"[data-testid='selenium-demo-page']\" visible timeout 15s\n    assert url contains \"idelium.org/demo\"\n}\n",
+          "note": "Open https://idelium.org/demo/ and verify the main demo container is ready."
+        }
+      ]
+    },
+    {
+      "name": "Verify hero, logo and console summary",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Verify the page identity, logo, hero title, capability badges, and demo console summary.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Verify hero, logo and console summary",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Verify hero, logo and console summary\" {\n    assert visible css \"[data-testid='demo-logo-link']\"\n    assert visible css \"[data-testid='demo-logo']\"\n    assert text xpath \"//h1\" contains \"Idelium Demo Lab\"\n    assert visible css \"[data-testid='capability-form']\"\n    assert visible css \"[data-testid='capability-waits']\"\n    assert visible css \"[data-testid='capability-iframe']\"\n    assert visible css \"[data-testid='capability-shadow']\"\n    assert visible css \"[data-testid='demo-console']\"\n}\n",
+          "note": "Verify the page identity, logo, hero title, capability badges, and demo console summary."
+        }
+      ]
+    },
+    {
+      "name": "Exercise form controls",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Fill the demo form, verify field values, toggle target choices, and submit the form.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise form controls",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise form controls\" {\n    wait css \"[data-testid='demo-form']\" visible timeout 10s\n    write css \"[data-testid='name-input']\" value \"Ada Lovelace\"\n    write css \"[data-testid='email-input']\" value \"ada@example.org\"\n    assert value css \"[data-testid='name-input']\" equals \"Ada Lovelace\"\n    assert value css \"[data-testid='email-input']\" contains \"ada@example.org\"\n    click css \"[data-testid='target-web-radio']\"\n    click css \"[data-testid='target-api-radio']\"\n    click css \"[data-testid='target-mobile-radio']\"\n    click css \"[data-testid='terms-checkbox']\"\n    assert visible css \"[data-testid='priority-range']\"\n    assert visible css \"[data-testid='priority-value']\"\n    write css \"[data-testid='notes-textarea']\" value \"Full Idelium demo coverage generated from the DSL import.\"\n    assert value css \"[data-testid='notes-textarea']\" contains \"DSL import\"\n    click css \"[data-testid='submit-button']\"\n}\n",
+          "note": "Fill the demo form, verify field values, toggle target choices, and submit the form."
+        }
+      ]
+    },
+    {
+      "name": "Exercise dynamic content, tabs and toast",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Trigger delayed and hidden content, switch tabs, and verify toast feedback.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise dynamic content, tabs and toast",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise dynamic content, tabs and toast\" {\n    click css \"[data-testid='load-delayed-button']\"\n    click css \"[data-testid='toggle-hidden-button']\"\n    wait css \"[data-testid='hidden-panel']\" visible timeout 10s\n    click css \"[data-testid='tab-overview']\"\n    click css \"[data-testid='tab-details']\"\n    wait css \"[data-testid='tab-panel']\" visible timeout 10s\n    click css \"[data-testid='tab-logs']\"\n    click css \"[data-testid='show-toast-button']\"\n    wait css \".demo-toast\" visible timeout 10s\n}\n",
+          "note": "Trigger delayed and hidden content, switch tabs, and verify toast feedback."
+        }
+      ]
+    },
+    {
+      "name": "Exercise searchable table and row actions",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Verify table search, sorting, row presence, and row action feedback.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise searchable table and row actions",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise searchable table and row actions\" {\n    wait css \"[data-testid='demo-table']\" visible timeout 10s\n    wait css \"[data-testid='table-search']\" visible timeout 10s\n    wait css \"[data-testid='table-count']\" visible timeout 10s\n    assert count css \"[data-testid^='run-row-']\" at_least 1\n    click css \"[data-testid='sort-name']\"\n    click css \"[data-testid='sort-status']\"\n    wait css \"[data-testid='run-row-api']\" present timeout 10s\n    wait css \"[data-testid='run-row-mobile']\" present timeout 10s\n    wait css \"[data-testid='run-row-plugins']\" present timeout 10s\n    wait css \"[data-testid='run-row-smoke']\" present timeout 10s\n    click css \"[data-testid='run-view-api']\"\n    wait css \"[data-testid='row-action-result']\" visible timeout 10s\n    write css \"[data-testid='table-search']\" value \"smoke\"\n    wait css \"[data-testid='table-count']\" visible timeout 10s\n}\n",
+          "note": "Verify table search, sorting, row presence, and row action feedback."
+        }
+      ]
+    },
+    {
+      "name": "Exercise keyboard, drag targets, Shadow DOM and iframe readiness",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Verify keyboard feedback and the advanced browser surfaces that DSL v1 can observe.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise keyboard, drag targets, Shadow DOM and iframe readiness",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise keyboard, drag targets, Shadow DOM and iframe readiness\" {\n    write css \"[data-testid='keyboard-input']\" value \"keyboard coverage\"\n    wait css \"[data-testid='keyboard-result']\" visible timeout 10s\n    wait css \"[data-testid='drag-source']\" visible timeout 10s\n    wait css \"[data-testid='drop-target']\" visible timeout 10s\n    wait css \"[data-testid='shadow-host']\" visible timeout 10s\n    wait css \"[data-testid='demo-iframe']\" visible timeout 10s\n}\n",
+          "note": "Verify keyboard feedback and the advanced browser surfaces that DSL v1 can observe."
+        }
+      ]
+    },
+    {
+      "name": "Verify HTML5 inputs, upload and download surfaces",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Verify file, date/time, color, readonly, disabled, summary, download, and new-window surfaces.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Verify HTML5 inputs, upload and download surfaces",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Verify HTML5 inputs, upload and download surfaces\" {\n    wait css \"[data-testid='file-input']\" present timeout 10s\n    wait css \"[data-testid='file-result']\" visible timeout 10s\n    wait css \"[data-testid='date-input']\" visible timeout 10s\n    wait css \"[data-testid='time-input']\" visible timeout 10s\n    wait css \"[data-testid='datetime-input']\" visible timeout 10s\n    wait css \"[data-testid='color-input']\" visible timeout 10s\n    wait css \"[data-testid='readonly-input']\" visible timeout 10s\n    wait css \"[data-testid='disabled-input']\" present timeout 10s\n    wait css \"[data-testid='html5-summary']\" visible timeout 10s\n    wait css \"[data-testid='download-link']\" visible timeout 10s\n    wait css \"[data-testid='new-window-link']\" visible timeout 10s\n}\n",
+          "note": "Verify file, date/time, color, readonly, disabled, summary, download, and new-window surfaces."
+        }
+      ]
+    },
+    {
+      "name": "Exercise validation, autocomplete, tooltip, popover and accordion",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Validate interactive widgets, feedback states, and accordion panels.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise validation, autocomplete, tooltip, popover and accordion",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise validation, autocomplete, tooltip, popover and accordion\" {\n    write css \"[data-testid='validation-username']\" value \"qauser\"\n    write css \"[data-testid='validation-email']\" value \"qa@example.org\"\n    click css \"[data-testid='validate-fields-button']\"\n    wait css \"[data-testid='validation-success']\" visible timeout 10s\n    wait css \"[data-testid='autocomplete-widget']\" visible timeout 10s\n    write css \"[data-testid='autocomplete-input']\" value \"selenium\"\n    wait css \"[data-testid='autocomplete-result']\" visible timeout 10s\n    click css \"[data-testid='tooltip-trigger']\"\n    wait css \"[data-testid='tooltip-content']\" present timeout 10s\n    click css \"[data-testid='popover-trigger']\"\n    wait xpath \"//*[contains(@class, 'demo-popover')]\" visible timeout 10s\n    wait css \"[data-testid='accordion']\" visible timeout 10s\n    wait css \"[data-testid='accordion-panel-selectors']\" visible timeout 10s\n    click css \"[data-testid='accordion-trigger-states']\"\n    wait css \"[data-testid='accordion-panel-states']\" visible timeout 10s\n    click css \"[data-testid='accordion-trigger-browser']\"\n    wait css \"[data-testid='accordion-panel-browser']\" visible timeout 10s\n}\n",
+          "note": "Validate interactive widgets, feedback states, and accordion panels."
+        }
+      ]
+    },
+    {
+      "name": "Exercise pagination, infinite list, storage and stale node",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Validate paginated lists, infinite-list loading, local storage controls, and stale-node replacement.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise pagination, infinite list, storage and stale node",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise pagination, infinite list, storage and stale node\" {\n    wait css \"[data-testid='pagination-widget']\" visible timeout 10s\n    wait css \"[data-testid='paginated-list']\" visible timeout 10s\n    wait css \"[data-testid='page-item-auth']\" visible timeout 10s\n    wait css \"[data-testid='page-item-checkout']\" visible timeout 10s\n    wait css \"[data-testid='page-item-api-contract']\" visible timeout 10s\n    click css \"[data-testid='pagination-next']\"\n    wait css \"[data-testid='pagination-status']\" visible timeout 10s\n    click css \"[data-testid='pagination-prev']\"\n    wait css \"[data-testid='infinite-list']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-auth']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-checkout']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-api-contract']\" visible timeout 10s\n    wait css \"[data-testid='infinite-item-mobile']\" visible timeout 10s\n    click css \"[data-testid='load-more-button']\"\n    wait css \"[data-testid='storage-widget']\" visible timeout 10s\n    click css \"[data-testid='save-storage-button']\"\n    click css \"[data-testid='read-storage-button']\"\n    click css \"[data-testid='clear-storage-button']\"\n    wait css \"[data-testid='storage-result']\" visible timeout 10s\n    click css \"[data-testid='replace-node-button']\"\n    wait css \"[data-testid='stale-target']\" visible timeout 10s\n}\n",
+          "note": "Validate paginated lists, infinite-list loading, local storage controls, and stale-node replacement."
+        }
+      ]
+    },
+    {
+      "name": "Exercise fake login and guided wizard",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Complete the fake-login flow and navigate the guided wizard forward and backward.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise fake login and guided wizard",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise fake login and guided wizard\" {\n    wait css \"[data-testid='fake-login-form']\" visible timeout 10s\n    write css \"[data-testid='login-username']\" value \"demo\"\n    write css \"[data-testid='login-password']\" value \"demo\"\n    click css \"[data-testid='login-submit']\"\n    wait css \"[data-testid='login-result']\" visible timeout 10s\n    wait css \"[data-testid='wizard']\" visible timeout 10s\n    wait css \"[data-testid='wizard-step-1']\" visible timeout 10s\n    click css \"[data-testid='wizard-next']\"\n    wait css \"[data-testid='wizard-step-2']\" visible timeout 10s\n    click css \"[data-testid='wizard-next']\"\n    wait css \"[data-testid='wizard-step-3']\" visible timeout 10s\n    wait css \"[data-testid='wizard-panel']\" visible timeout 10s\n    click css \"[data-testid='wizard-prev']\"\n}\n",
+          "note": "Complete the fake-login flow and navigate the guided wizard forward and backward."
+        }
+      ]
+    },
+    {
+      "name": "Exercise network, responsive markers and flaky simulator",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": false,
+      "description": "Trigger network states, verify responsive markers, and run/reset the flaky simulator.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Exercise network, responsive markers and flaky simulator",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Exercise network, responsive markers and flaky simulator\" {\n    click css \"[data-testid='network-success']\"\n    wait css \"[data-testid='network-result']\" visible timeout 10s\n    click css \"[data-testid='network-error']\"\n    wait css \"[data-testid='network-result']\" visible timeout 10s\n    click css \"[data-testid='network-timeout']\"\n    wait css \"[data-testid='network-result']\" visible timeout 10s\n    wait css \"[data-testid='marker-desktop']\" present timeout 10s\n    wait css \"[data-testid='marker-tablet']\" present timeout 10s\n    wait css \"[data-testid='marker-mobile']\" present timeout 10s\n    click css \"[data-testid='flaky-start']\"\n    wait css \"[data-testid='flaky-status']\" visible timeout 10s\n    click css \"[data-testid='flaky-reset']\"\n}\n",
+          "note": "Trigger network states, verify responsive markers, and run/reset the flaky simulator."
+        }
+      ]
+    },
+    {
+      "name": "Capture DSL coverage screenshot",
+      "editorType": "dsl",
+      "failedExit": true,
+      "attachScreenshot": true,
+      "description": "Capture the final browser state as a DSL execution artifact.",
+      "steps": [
+        {
+          "stepType": "dsl",
+          "runtime": "dsl",
+          "schemaVersion": "dsl.source.v1",
+          "languageVersion": "1.0",
+          "name": "Capture DSL coverage screenshot",
+          "source": "idelium 1.0\n\n# Browser-only DSL coverage for https://idelium.org/demo/.\n# DSL v1 intentionally avoids custom JavaScript, alert handling, iframe switching,\n# Shadow DOM traversal, native select mutation, and Postman execution. Those\n# surfaces remain covered by the native JSON/Postman examples until DSL v1 grows\n# dedicated commands for them.\ntest \"Capture DSL coverage screenshot\" {\n    screenshot \"idelium-demo-dsl-coverage\"\n}\n",
+          "note": "Capture the final browser state as a DSL execution artifact."
         }
       ]
     }

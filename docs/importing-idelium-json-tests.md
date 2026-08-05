@@ -53,6 +53,12 @@ from the same web-console workflow. Its executable action uses:
 }
 ```
 
+The DSL example is split into multiple reusable Idelium steps, mirroring the
+Selenium example sections. This keeps the execution results readable: the web
+console shows separate entries for opening the page, verifying the hero area,
+exercising forms, dynamic content, tables, widgets, pagination, fake login,
+network controls, and the final screenshot.
+
 The DSL example covers the browser component families that DSL v1 supports:
 navigation, explicit waits, visibility checks, text/value assertions, counts,
 clicks, text entry, conditionally visible widgets, pagination, storage controls,
